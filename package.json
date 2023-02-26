@@ -1,6 +1,6 @@
 {
     "name": "stHome",
-    "description": "A Node-RED Project",
+    "description": "Homeautomation with NodeRed",
     "version": "0.0.1",
     "dependencies": {},
     "node-red": {
