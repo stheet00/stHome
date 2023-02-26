@@ -9,32 +9,45 @@
   "uibuilder": {
     "packages": {
       "bootstrap": {
+        "spec": "^4.6.1",
         "installFolder": "/home/pi/.node-red/projects/stHome/uibuilder/node_modules/bootstrap",
         "installedVersion": "4.6.2",
         "estimatedEntryPoint": "dist/js/bootstrap.js",
         "homepage": "https://getbootstrap.com/",
         "packageUrl": "/bootstrap",
         "url": "../uibuilder/vendor/bootstrap/dist/js/bootstrap.js",
-        "spec": "^4.6.1"
+        "installedFrom": "npm",
+        "outdated": {
+          "current": "4.6.2",
+          "wanted": "4.6.2",
+          "latest": "5.2.3"
+        }
       },
       "bootstrap-vue": {
+        "spec": "^2.23.1",
         "installFolder": "/home/pi/.node-red/projects/stHome/uibuilder/node_modules/bootstrap-vue",
         "installedVersion": "2.23.1",
         "estimatedEntryPoint": "./dist/bootstrap-vue.common.js",
         "homepage": "https://bootstrap-vue.org",
         "packageUrl": "/bootstrap-vue",
         "url": "../uibuilder/vendor/bootstrap-vue/./dist/bootstrap-vue.common.js",
-        "bootstrap": "^4.6.1",
-        "spec": "^2.23.1"
+        "installedFrom": "npm",
+        "outdated": {}
       },
       "vue": {
+        "spec": "^2.7.14",
         "installFolder": "/home/pi/.node-red/projects/stHome/uibuilder/node_modules/vue",
         "installedVersion": "2.7.14",
         "estimatedEntryPoint": "dist/vue.js",
         "homepage": "https://github.com/vuejs/vue#readme",
         "packageUrl": "/vue",
         "url": "../uibuilder/vendor/vue/dist/vue.js",
-        "spec": "^2.7.14"
+        "installedFrom": "npm",
+        "outdated": {
+          "current": "2.7.14",
+          "wanted": "2.7.14",
+          "latest": "3.2.47"
+        }
       }
     }
   }
