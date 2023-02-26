@@ -1,0 +1,59 @@
+[
+    {
+        "id": "781e2d3a48b04110",
+        "type": "tab",
+        "label": "_maintenance",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "38ec287f.814568",
+        "type": "exec",
+        "z": "781e2d3a48b04110",
+        "command": "sudo ",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "System Command",
+        "x": 390,
+        "y": 120,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7487d790.49c368",
+        "type": "inject",
+        "z": "781e2d3a48b04110",
+        "name": "Restart node-RED",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "node-red-restart",
+        "payloadType": "str",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "38ec287f.814568"
+            ]
+        ]
+    },
+    {
+        "id": "fb03b353.5250f",
+        "type": "comment",
+        "z": "781e2d3a48b04110",
+        "name": "NodeRed restart",
+        "info": "",
+        "x": 140,
+        "y": 60,
+        "wires": []
+    }
+]
