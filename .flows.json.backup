@@ -16,6 +16,14 @@
         "env": []
     },
     {
+        "id": "eda35aea761e62ca",
+        "type": "tab",
+        "label": "EV",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "ca185c1af81e0a09",
         "type": "ccu-connection",
         "name": "hm01",
@@ -30,7 +38,7 @@
         "regaInterval": "30",
         "rpcPingTimeout": "60",
         "rpcInitAddress": "",
-        "rpcServerHost": "192.168.20.68",
+        "rpcServerHost": "192.168.20.17",
         "rpcBinPort": "2048",
         "rpcXmlPort": "2049",
         "tls": false,
@@ -41,6 +49,55 @@
         "queueTimeout": "5000",
         "queuePause": "250",
         "contextStore": ""
+    },
+    {
+        "id": "1e1a0e45bfb2abe0",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": false
+    },
+    {
+        "id": "b56a2f8c.4744d",
+        "type": "tls-config",
+        "name": "local-tls",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "verifyservercert": false
+    },
+    {
+        "id": "25b4ae1f.f6e792",
+        "type": "mqtt-broker",
+        "name": "openWB",
+        "broker": "192.168.20.14",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "compatmode": false,
+        "protocolVersion": 4,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
     },
     {
         "id": "38ec287f.814568",
@@ -96,7 +153,7 @@
         "type": "debug",
         "z": "40f5e7c72cdecaab",
         "name": "debug 1",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -104,8 +161,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1160,
-        "y": 220,
+        "x": 820,
+        "y": 280,
         "wires": []
     },
     {
@@ -114,7 +171,7 @@
         "z": "40f5e7c72cdecaab",
         "name": "ccu/deviceName/datapoint",
         "info": "",
-        "x": 530,
+        "x": 330,
         "y": 180,
         "wires": []
     },
@@ -123,16 +180,18 @@
         "type": "function",
         "z": "40f5e7c72cdecaab",
         "name": "Transform",
-        "func": "return {\n    payload: msg.payload,\n    topic: \"hm01/\"+msg.deviceName+\"/\"+msg.datapoint,\n    channelType: msg.channelType,\n    deviceType: msg.deviceType};\n",
+        "func": "return {\n    topic: \"hm01/\" + msg.deviceName + \"/\" + msg.datapoint,\n    payload: msg.payload,\n    ccu : \"hm01\",\n    name: msg.deviceName,\n    datapoint: msg.datapoint,\n    channelType: msg.channelType,\n    deviceType: msg.deviceType};\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 480,
+        "x": 280,
         "y": 220,
         "wires": [
-            []
+            [
+                "adc5300179c0cf6a"
+            ]
         ]
     },
     {
@@ -148,7 +207,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 480,
+        "x": 280,
         "y": 300,
         "wires": []
     },
@@ -183,7 +242,7 @@
         "working": false,
         "cache": false,
         "topic": "${CCU}/${Interface}/${channelName}/${datapoint}",
-        "x": 300,
+        "x": 100,
         "y": 220,
         "wires": [
             [
@@ -210,11 +269,1270 @@
         "sourceFolder": "src",
         "deployedVersion": "6.0.0",
         "showMsgUib": false,
-        "x": 320,
-        "y": 120,
+        "x": 340,
+        "y": 80,
         "wires": [
             [],
             []
         ]
+    },
+    {
+        "id": "1bca9db95a3587df",
+        "type": "influxdb out",
+        "z": "40f5e7c72cdecaab",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "homematic",
+        "x": 870,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "763919f3816edf8e",
+        "type": "comment",
+        "z": "40f5e7c72cdecaab",
+        "name": "db insert command",
+        "info": "",
+        "x": 570,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "adc5300179c0cf6a",
+        "type": "function",
+        "z": "40f5e7c72cdecaab",
+        "name": "function 1",
+        "func": "var inMsg = {\n    measurement: msg.datapoint,\n    payload :\n    [{\n// fields\n        value: msg.payload\n    },\n    {\n// tags\n        ccu: msg.ccu,\n        type: msg.deviceType,\n        name: msg.name,\n        channelType: msg.channelType\n    }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "08c58347de41adad",
+                "1bca9db95a3587df"
+            ]
+        ]
+    },
+    {
+        "id": "ce452e615d092013",
+        "type": "influxdb in",
+        "z": "40f5e7c72cdecaab",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "Get last",
+        "query": "from(bucket: \"homematic\")\n    |> range(start: -1h)\n    |> last()\n\n\n",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 820,
+        "y": 420,
+        "wires": [
+            [
+                "b74941c18f95880d"
+            ]
+        ]
+    },
+    {
+        "id": "c66df25b3fa8aef4",
+        "type": "inject",
+        "z": "40f5e7c72cdecaab",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 540,
+        "y": 420,
+        "wires": [
+            [
+                "ce452e615d092013"
+            ]
+        ]
+    },
+    {
+        "id": "b74941c18f95880d",
+        "type": "debug",
+        "z": "40f5e7c72cdecaab",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1160,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "b941877f.c738b8",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "Mode",
+        "info": "",
+        "x": 90,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "faea28f7.f59ef8",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "0=Sofort, 1=Min+PV, 2=PV, 3=Stop, 4=Standby",
+        "info": "",
+        "x": 220,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "98b9695d.a10238",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/global/ChargeMode",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "8f9a7c28e4b76e19"
+            ]
+        ]
+    },
+    {
+        "id": "cfc49c92.355e6",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/get/pv/priorityModeEVBattery",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "03c802a55cc00d42"
+            ]
+        ]
+    },
+    {
+        "id": "8f9a7c28e4b76e19",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var cMode = msg.payload * 1;\nvar cmMode = \"Stop\";\nif (cMode === 0) { cmMode = \"Sofort\" }\nif (cMode === 1) { cmMode = \"Mini+PV\" }\nif (cMode === 2) { cmMode = \"PV\" }\nif (cMode === 3) { cmMode = \"Stop\" }\nif (cMode === 4) { cmMode = \"Standby\" }\n\nvar inMsg = {\n    measurement: \"chargeMode\",\n    payload:\n        [{\n            // fields\n            value: cMode,\n        },\n        {\n            // tags\n            type: \"openWB\",\n            group: \"wallbox\",\n            lp: 1,\n            valueN: cmMode\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 160,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "4baded220266cd06",
+        "type": "influxdb out",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "ev",
+        "x": 1030,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "03c802a55cc00d42",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var cMode = msg.payload * 1;\nvar cmMode = \"Battery\";\nif (cMode === 0) { cmMode = \"Battery\" }\nif (cMode === 1) { cmMode = \"Car\" }\n\nvar inMsg = {\n    measurement: \"priorityModeEVBattery\",\n    payload:\n        [{\n            // fields\n            value: cMode,\n        },\n        {\n            // tags\n            type: \"openWB\",\n            group: \"wallbox\",\n            name: \"priorityModeEVBattery\",\n            lp: 1,\n            valueN: cmMode\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "97d4e952.42ff7",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/boolPlugStat",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 150,
+        "y": 380,
+        "wires": [
+            [
+                "b5dd78b133116ebb"
+            ]
+        ]
+    },
+    {
+        "id": "7cdb89e4.c626f8",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "LP 1",
+        "info": "",
+        "x": 90,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "969ea805.4712b",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/ChargePointEnabled",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "872f4374027e6c37"
+            ]
+        ]
+    },
+    {
+        "id": "bc5a1df2.ed2c6",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/W",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 120,
+        "y": 620,
+        "wires": [
+            [
+                "a8c82aedb2179bab"
+            ]
+        ]
+    },
+    {
+        "id": "77de4e7c.005e7",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/ChargeStatus",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "1dd693d40e769231"
+            ]
+        ]
+    },
+    {
+        "id": "8a891ff.74ccf6",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/kWhDailyCharged",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 170,
+        "y": 560,
+        "wires": [
+            [
+                "dee88783f6941872"
+            ]
+        ]
+    },
+    {
+        "id": "8ef260b7.8e29a",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/get/sofort/lp/1/current",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 190,
+        "y": 680,
+        "wires": [
+            [
+                "67b5be6db5ab08ac"
+            ]
+        ]
+    },
+    {
+        "id": "ab7f6dbc.dc8108",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/AConfigured",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 150,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "799d7fd2.c6df4",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/%Soc",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 130,
+        "y": 800,
+        "wires": [
+            [
+                "e43319bbf297a9cc"
+            ]
+        ]
+    },
+    {
+        "id": "62b6b174.a61c2",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/socFaultState",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "inputs": 0,
+        "x": 150,
+        "y": 860,
+        "wires": [
+            [
+                "f03fa9bb0ab4fa65"
+            ]
+        ]
+    },
+    {
+        "id": "174cd797435d7af6",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.topic,\n    payload:\n        [{\n            // fields\n            value: msg.payload * 1,\n        },\n        {\n            // tags\n            type: \"openWB\",\n            group: \"wallbox\",\n            lp: 1\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 380,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "b5dd78b133116ebb",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "plugState",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "plugState",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "174cd797435d7af6"
+            ]
+        ]
+    },
+    {
+        "id": "872f4374027e6c37",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "chargePointEnabled",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargePointEnabled",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 440,
+        "wires": [
+            [
+                "174cd797435d7af6"
+            ]
+        ]
+    },
+    {
+        "id": "1dd693d40e769231",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "chargeStatus",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargeStatus",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 500,
+        "wires": [
+            [
+                "174cd797435d7af6"
+            ]
+        ]
+    },
+    {
+        "id": "a8c82aedb2179bab",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: \"currentPower\",\n    payload:\n        [{\n            // fields\n            value: (msg.payload / 1000).toFixed(2),\n        },\n        {\n            // tags\n            type: \"openWB\",\n            group: \"wallbox\",\n            lp: 1,\n            unit: \"kWh\"\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 620,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "dee88783f6941872",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: \"powerDailyCharged\",\n    payload:\n        [{\n            // fields\n            value: msg.payload/1000,\n        },\n        {\n            // tags\n            type: \"openWB\",\n            group: \"wallbox\",\n            lp: 1,\n            unit: \"kWh\"\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 560,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "67b5be6db5ab08ac",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "currentInModeNow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "currentInModeNow",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 680,
+        "wires": [
+            [
+                "174cd797435d7af6"
+            ]
+        ]
+    },
+    {
+        "id": "1645d60a4bb9c83a",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.topic,\n    payload:\n        [{\n            // fields\n            value: msg.payload*1,\n        },\n        {\n            // tags\n            type: \"smartEQ\",\n            group: \"car\",\n            number: 1\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 800,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "e43319bbf297a9cc",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "carSoc",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "carSoc",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 800,
+        "wires": [
+            [
+                "1645d60a4bb9c83a"
+            ]
+        ]
+    },
+    {
+        "id": "f03fa9bb0ab4fa65",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "carSocFaultState",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "carSocFaultState",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 860,
+        "wires": [
+            [
+                "1645d60a4bb9c83a"
+            ]
+        ]
+    },
+    {
+        "id": "a1d4b2a2.c40f5",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "Reset NightPlan",
+        "info": "",
+        "x": 120,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "f6a9501b.71959",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "Stop",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "3",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 1020,
+        "wires": [
+            [
+                "c9db06e6.8dfe2"
+            ]
+        ]
+    },
+    {
+        "id": "e1edcaa2.5c0ed8",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "PV",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "2",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 1080,
+        "wires": [
+            [
+                "c9db06e6.8dfe2"
+            ]
+        ]
+    },
+    {
+        "id": "a24f8b94.8417f",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "Sofort",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 1140,
+        "wires": [
+            [
+                "c9db06e6.8dfe2"
+            ]
+        ]
+    },
+    {
+        "id": "c9db06e6.8dfe2",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/set/ChargeMode",
+        "qos": "",
+        "retain": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1310,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "5432d8cb.a853c8",
+        "type": "cronplus",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "outputField": "payload",
+        "timeZone": "Europe/Berlin",
+        "persistDynamic": false,
+        "commandResponseMsgOutput": "output1",
+        "outputs": 1,
+        "options": [
+            {
+                "name": "schedule1",
+                "topic": "schedule1",
+                "payloadType": "default",
+                "payload": "",
+                "expressionType": "cron",
+                "expression": "0 30 7 * * ? *",
+                "location": "",
+                "offset": "0",
+                "solarType": "all",
+                "solarEvents": "sunrise,sunset"
+            }
+        ],
+        "x": 130,
+        "y": 1020,
+        "wires": [
+            [
+                "f6a9501b.71959"
+            ]
+        ]
+    },
+    {
+        "id": "d6da8519.083a7",
+        "type": "cronplus",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "outputField": "payload",
+        "timeZone": "Europe/Berlin",
+        "persistDynamic": false,
+        "commandResponseMsgOutput": "output1",
+        "outputs": 1,
+        "options": [
+            {
+                "name": "schedule1",
+                "topic": "schedule1",
+                "payloadType": "default",
+                "payload": "",
+                "expressionType": "cron",
+                "expression": "0 31 7 * * ? *",
+                "location": "",
+                "offset": "0",
+                "solarType": "all",
+                "solarEvents": "sunrise,sunset"
+            }
+        ],
+        "x": 130,
+        "y": 1080,
+        "wires": [
+            [
+                "e1edcaa2.5c0ed8",
+                "0553801f7759e3df"
+            ]
+        ]
+    },
+    {
+        "id": "d44740d6608a5244",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/set/sofort/lp/1/current",
+        "qos": "",
+        "retain": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1350,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "0553801f7759e3df",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "8A",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "8",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 1220,
+        "wires": [
+            [
+                "d44740d6608a5244"
+            ]
+        ]
+    },
+    {
+        "id": "7904bcad6605e926",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "16A",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "16",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 1260,
+        "wires": [
+            [
+                "d44740d6608a5244"
+            ]
+        ]
+    },
+    {
+        "id": "b2a08f5c1617f513",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/set/sofort/lp/1/chargeLimitation",
+        "qos": "",
+        "retain": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1380,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "8323fb8551540846",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "0 = none 1 = Energiemenge 2 = EV-SoC",
+        "info": "0 = none\n1 = Energiemenge\n2 = EV-SoC",
+        "x": 1360,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "b4558168fdde509a",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/set/sofort/lp/1/socToChargeTo",
+        "qos": "",
+        "retain": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1380,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "076a40fb1f85059d",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "SOC = 75%",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "75",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 1520,
+        "wires": [
+            [
+                "b4558168fdde509a"
+            ]
+        ]
+    },
+    {
+        "id": "62ee48c2362f4fd8",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "None",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 1380,
+        "wires": [
+            [
+                "b2a08f5c1617f513"
+            ]
+        ]
+    },
+    {
+        "id": "aa8b5ca684d7bf49",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "EV-SoC",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "2",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 1420,
+        "wires": [
+            [
+                "b2a08f5c1617f513"
+            ]
+        ]
+    },
+    {
+        "id": "badf80d98ca28d2f",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "Energy",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 1760,
+        "wires": [
+            [
+                "b2a08f5c1617f513"
+            ]
+        ]
+    },
+    {
+        "id": "ee2628cd97611584",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/config/set/sofort/lp/1/energyToCharge",
+        "qos": "",
+        "retain": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1380,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "41d3d89ae35d1bc7",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "Energy=6 kWh",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "6",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 1820,
+        "wires": [
+            [
+                "ee2628cd97611584"
+            ]
+        ]
+    },
+    {
+        "id": "5ea714c36d0b07b8",
+        "type": "influxdb in",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "00-Outdoor-Temp.vNorth:Temperature",
+        "query": "from(bucket: \"homematic\")\n  |> range(start: -5h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"TEMPERATURE\")\n  |> filter(fn: (r) => r[\"name\"] == \"00-Outdoor-Temp.vNorth\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 390,
+        "y": 1380,
+        "wires": [
+            [
+                "b9a70645.25553"
+            ]
+        ]
+    },
+    {
+        "id": "d85b387ddbde7469",
+        "type": "cronplus",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "outputField": "payload",
+        "timeZone": "Europe/Berlin",
+        "persistDynamic": false,
+        "commandResponseMsgOutput": "output1",
+        "outputs": 1,
+        "options": [
+            {
+                "name": "schedule1",
+                "topic": "schedule1",
+                "payloadType": "default",
+                "payload": "",
+                "expressionType": "cron",
+                "expression": "0 00 7 * * ? *",
+                "location": "",
+                "offset": "0",
+                "solarType": "all",
+                "solarEvents": "sunrise,sunset"
+            }
+        ],
+        "x": 140,
+        "y": 1380,
+        "wires": [
+            [
+                "5ea714c36d0b07b8"
+            ]
+        ]
+    },
+    {
+        "id": "b9a70645.25553",
+        "type": "switch",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "property": "payload[0]._value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "15",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 1380,
+        "wires": [
+            [
+                "a24f8b94.8417f",
+                "0553801f7759e3df",
+                "62ee48c2362f4fd8"
+            ]
+        ]
+    },
+    {
+        "id": "2e65c677545e55bf",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "EV Conditioning",
+        "info": "",
+        "x": 140,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "42f1e37ac6f7459e",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "Charge SOC",
+        "info": "",
+        "x": 130,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "c95b662a00ae1739",
+        "type": "influxdb in",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "socFaultState",
+        "query": "from(bucket: \"ev\")\n  |> range(start: -5h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"carSocFaultState\")\n  |> filter(fn: (r) => r[\"type\"] == \"smartEQ\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 320,
+        "y": 1540,
+        "wires": [
+            [
+                "fc699d50d6a9aabb",
+                "958c8193562414a1"
+            ]
+        ]
+    },
+    {
+        "id": "fd02639b9aefa1dd",
+        "type": "cronplus",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "outputField": "payload",
+        "timeZone": "Europe/Berlin",
+        "persistDynamic": false,
+        "commandResponseMsgOutput": "output1",
+        "outputs": 1,
+        "options": [
+            {
+                "name": "schedule1",
+                "topic": "schedule1",
+                "payloadType": "default",
+                "payload": "",
+                "expressionType": "cron",
+                "expression": "0 00 6 * * ? *",
+                "location": "",
+                "offset": "0",
+                "solarType": "all",
+                "solarEvents": "sunrise,sunset"
+            }
+        ],
+        "x": 140,
+        "y": 1540,
+        "wires": [
+            [
+                "c95b662a00ae1739"
+            ]
+        ]
+    },
+    {
+        "id": "fc699d50d6a9aabb",
+        "type": "switch",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "property": "payload[0]._value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 650,
+        "y": 1540,
+        "wires": [
+            [
+                "a24f8b94.8417f",
+                "aa8b5ca684d7bf49",
+                "076a40fb1f85059d",
+                "7904bcad6605e926"
+            ],
+            [
+                "a24f8b94.8417f",
+                "badf80d98ca28d2f",
+                "41d3d89ae35d1bc7",
+                "7904bcad6605e926"
+            ]
+        ]
+    },
+    {
+        "id": "958c8193562414a1",
+        "type": "debug",
+        "z": "eda35aea761e62ca",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 1640,
+        "wires": []
     }
 ]
