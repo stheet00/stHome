@@ -24,6 +24,14 @@
         "env": []
     },
     {
+        "id": "16d854753ce10409",
+        "type": "tab",
+        "label": "PowerMan",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "ca185c1af81e0a09",
         "type": "ccu-connection",
         "name": "hm01",
@@ -98,6 +106,87 @@
         "willTopic": "",
         "willQos": "0",
         "willPayload": ""
+    },
+    {
+        "id": "7e9912ee.546204",
+        "type": "modbus-client",
+        "name": "SE-Gartenhaus",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "tcpHost": "192.168.20.16",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true
+    },
+    {
+        "id": "78b1c87b.391bc8",
+        "type": "modbus-client",
+        "name": "SE-Dach",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": false,
+        "tcpHost": "192.168.20.13",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": false,
+        "reconnectTimeout": 20000,
+        "parallelUnitIdsAllowed": false
+    },
+    {
+        "id": "8136bb04f2f3061c",
+        "type": "modbus-client",
+        "name": "",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "127.0.0.1",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showWarnings": true,
+        "showLogs": true
     },
     {
         "id": "38ec287f.814568",
@@ -1444,8 +1533,7 @@
         "y": 1540,
         "wires": [
             [
-                "fc699d50d6a9aabb",
-                "958c8193562414a1"
+                "fc699d50d6a9aabb"
             ]
         ]
     },
@@ -1519,11 +1607,111 @@
         ]
     },
     {
-        "id": "958c8193562414a1",
+        "id": "d0727bd3.f5d738",
+        "type": "modbus-read",
+        "z": "16d854753ce10409",
+        "name": "SolarEdge 3",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "40083",
+        "quantity": "20",
+        "rate": "20",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "7e9912ee.546204",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 560,
+        "wires": [
+            [],
+            [
+                "33449a937d186c07"
+            ]
+        ]
+    },
+    {
+        "id": "ba1fed775a9a4167",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "WR Gartenhaus",
+        "info": "",
+        "x": 120,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "33449a937d186c07",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = { \ntopic: \"seCal\",\npayload: [\n    {k: 'i_AC_Power', v: round(int16(40084) * scalefactor(40085) / 1000, 2)}, //I_AC_Power\n    {k: 'i_DC_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2)}  // I_DC_Power\n]}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 560,
+        "wires": [
+            [
+                "ffcb42308459e88d"
+            ]
+        ]
+    },
+    {
+        "id": "ffcb42308459e88d",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 560,
+        "wires": [
+            [
+                "b8859a467c0a5dda"
+            ]
+        ]
+    },
+    {
+        "id": "b8859a467c0a5dda",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"shelter\",\n            instance: 2\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 560,
+        "wires": [
+            [
+                "7da1c7bf5f0d6c09",
+                "38413cfbad00b12d"
+            ]
+        ]
+    },
+    {
+        "id": "7da1c7bf5f0d6c09",
         "type": "debug",
-        "z": "eda35aea761e62ca",
-        "name": "debug 4",
-        "active": true,
+        "z": "16d854753ce10409",
+        "name": "debug 6",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1531,8 +1719,551 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 580,
-        "y": 1640,
+        "x": 1000,
+        "y": 560,
         "wires": []
+    },
+    {
+        "id": "38413cfbad00b12d",
+        "type": "influxdb out",
+        "z": "16d854753ce10409",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "powerMan",
+        "x": 1130,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f61f19d0.2a7438",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "Fetch Solaredge TCP modbus data",
+        "info": "zsdfzsdfg",
+        "x": 180,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "fa527835.e14da",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "WR Dach",
+        "info": "",
+        "x": 100,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "49429e0d.b198d",
+        "type": "modbus-read",
+        "z": "16d854753ce10409",
+        "name": "SolarEdge 3",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "40083",
+        "quantity": "20",
+        "rate": "20",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [],
+            [
+                "6602d1b7.b24d78"
+            ]
+        ]
+    },
+    {
+        "id": "6602d1b7.b24d78",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'i_AC_PowerReal', v: round(int16(40084) * scalefactor(40085) / 1000, 2) },\n        //{ k: 'i_DC_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2) }\n        // solar power will be calculated dc/ac-solar = I_AC_Power - bat_AC_Power\n    ]\n}\n\n/*\nif (msg.payload.I_DC_Power < -0.02) {\n    msg.payload.I_AC_Power = msg.payload.I_DC_Power;\n}\n*/\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "f181a24885a1a36e"
+            ]
+        ]
+    },
+    {
+        "id": "a987abfaf067f0d7",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'm_AC_Current', v: round(int16(40191) * scalefactor(40195), 2) },\n        { k: 'm_AC_Current_A', v: round(int16(40192) * scalefactor(40195), 2) },\n        { k: 'm_AC_Current_B', v: round(int16(40193) * scalefactor(40195), 2)},\n        { k: 'm_AC_Current_C', v: round(int16(40194) * scalefactor(40195), 2)},\n        { k: 'm_AC_Voltage_AN', v: round(int16(40197) * scalefactor(40204), 2)},\n        { k: 'm_AC_Voltage_BN', v: round(int16(40198) * scalefactor(40204), 2)},\n        { k: 'm_AC_Voltage_CN', v: round(int16(40199) * scalefactor(40204), 2)},\n        { k: 'm_AC_Power', v: round(int16(40207) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_A', v: round(int16(40208) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_B', v: round(int16(40209) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_C', v: round(int16(40210) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Freq', v: round(int16(40205) * scalefactor(40206), 2)},\n        { k: 'm_AC_PF', v: round(int16(40222) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_A', v: round(int16(40223) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_B', v: round(int16(40224) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_C', v: round(int16(40225) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_VAR', v: round(int16(40217) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_A', v: round(int16(40218) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_B', v: round(int16(40219) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_C', v: round(int16(40220) * scalefactor(40221) / 1000, 2)},\n\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40191) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 220,
+        "wires": [
+            [
+                "12aeaa3bea1f97e8"
+            ]
+        ]
+    },
+    {
+        "id": "f181a24885a1a36e",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 160,
+        "wires": [
+            [
+                "e24f2cd6249335ab"
+            ]
+        ]
+    },
+    {
+        "id": "e24f2cd6249335ab",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 160,
+        "wires": [
+            [
+                "38413cfbad00b12d",
+                "6094442647f33163"
+            ]
+        ]
+    },
+    {
+        "id": "12aeaa3bea1f97e8",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "e24f2cd6249335ab"
+            ]
+        ]
+    },
+    {
+        "id": "ce1bef37409bf886",
+        "type": "modbus-read",
+        "z": "16d854753ce10409",
+        "name": "",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "",
+        "dataType": "HoldingRegister",
+        "adr": "40190",
+        "quantity": "40",
+        "rate": "20",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [],
+            [
+                "a987abfaf067f0d7"
+            ]
+        ]
+    },
+    {
+        "id": "6094442647f33163",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "7092266835921eab",
+        "type": "modbus-read",
+        "z": "16d854753ce10409",
+        "name": "",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "",
+        "dataType": "HoldingRegister",
+        "adr": "62836",
+        "quantity": "2",
+        "rate": "20",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [],
+            [
+                "f5bd18124162dace"
+            ]
+        ]
+    },
+    {
+        "id": "f5bd18124162dace",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\n// source: https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'bat_DC_Power', v: round(float(62836)*(-1) / 1000, 2) }\n    ]\n}\ncol.payload[1] = { k: 'bat_AC_Power', v: round(col.payload[0].v * (0.91), 2) }\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62836) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 300,
+        "wires": [
+            [
+                "6b36142e053cb40f",
+                "a9ea0b2b829e8135"
+            ]
+        ]
+    },
+    {
+        "id": "6b36142e053cb40f",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 300,
+        "wires": [
+            [
+                "0e61a3c4d942e5ce"
+            ]
+        ]
+    },
+    {
+        "id": "0e61a3c4d942e5ce",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"battery\",\n            group: \"pv\",\n            location: \"basement\",\n            instance: 1\n        }]\n}\n\nif(msg.payload.k == \"bat_State\") {\n    var cmMode = \"Off\";\n    if (msg.payload.v === 3) { cmMode = \"Charge\" }\n    if (msg.payload.v === 4) { cmMode = \"Discharge\" }\n    if (msg.payload.v === 6) { cmMode = \"Cons-Charging\" }\n    inMsg.payload[1][\"valueN\"] = cmMode;\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 300,
+        "wires": [
+            [
+                "38413cfbad00b12d"
+            ]
+        ]
+    },
+    {
+        "id": "a9ea0b2b829e8135",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 8",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "621e46aa9130767c",
+        "type": "modbus-read",
+        "z": "16d854753ce10409",
+        "name": "",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "",
+        "dataType": "HoldingRegister",
+        "adr": "62852",
+        "quantity": "4",
+        "rate": "20",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [],
+            [
+                "defe7e798dc09814"
+            ]
+        ]
+    },
+    {
+        "id": "defe7e798dc09814",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\n// source https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'bat_soc', v: float(62852) },\n        { k: 'bat_State', v: uint16(62854) }\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62852) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "840dbd4718747fd4"
+            ]
+        ]
+    },
+    {
+        "id": "840dbd4718747fd4",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 570,
+        "y": 360,
+        "wires": [
+            [
+                "0e61a3c4d942e5ce"
+            ]
+        ]
+    },
+    {
+        "id": "aa1ead1055651f2c",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "Calculate roof : I_DC_Power",
+        "info": "",
+        "x": 160,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "3af79f53487d97e8",
+        "type": "influxdb in",
+        "z": "16d854753ce10409",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"powerMan\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"i_AC_PowerReal\" or r[\"_measurement\"] == \"bat_AC_Power\")\n  |> filter(fn: (r) => r[\"instance\"] == \"1\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 390,
+        "y": 800,
+        "wires": [
+            [
+                "7afaf5cfa7e4c6b1"
+            ]
+        ]
+    },
+    {
+        "id": "2f7cd462606a9668",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "20",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 800,
+        "wires": [
+            [
+                "3af79f53487d97e8"
+            ]
+        ]
+    },
+    {
+        "id": "07bc32a82bd10b6f",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 9",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "7afaf5cfa7e4c6b1",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Calc solar power i_DC_Power",
+        "func": "var bat_AC_Power = msg.payload.find(i => i._measurement == \"bat_AC_Power\");\nvar i_AC_PowerReal = msg.payload.find(i => i._measurement == \"i_AC_PowerReal\");\n\nvar i_AC_Power = round(i_AC_PowerReal._value - bat_AC_Power._value, 2);\nvar i_DC_Power = round(i_AC_Power*1.08, 2);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'i_AC_Power', v: i_AC_Power },\n        { k: 'i_DC_Power', v: i_DC_Power }\n    ]\n}\n\nreturn col;\n\nfunction round(value, decimals) {\n    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 800,
+        "wires": [
+            [
+                "ece68521d44e59f0"
+            ]
+        ]
+    },
+    {
+        "id": "4505aeca478f263d",
+        "type": "influxdb out",
+        "z": "16d854753ce10409",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "powerMan",
+        "x": 1390,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "9b137f730ca8c370",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 800,
+        "wires": [
+            [
+                "4505aeca478f263d",
+                "07bc32a82bd10b6f"
+            ]
+        ]
+    },
+    {
+        "id": "ece68521d44e59f0",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 910,
+        "y": 800,
+        "wires": [
+            [
+                "9b137f730ca8c370"
+            ]
+        ]
     }
 ]
