@@ -8,6 +8,14 @@
         "env": []
     },
     {
+        "id": "e1c0c9780ef1442c",
+        "type": "tab",
+        "label": "UI",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "40f5e7c72cdecaab",
         "type": "tab",
         "label": "homematic",
@@ -30,6 +38,92 @@
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "20d4f02356ac495b",
+        "type": "tab",
+        "label": "Climate",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d0287b86.19f57",
+        "type": "subflow",
+        "name": "espCO2",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 140,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "1e50977d.ae26e1"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 900,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "fd009eb7.af3b9",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Id",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "co2calib",
+                "type": "env",
+                "value": "${Id}/switch/co2calib/command"
+            },
+            {
+                "name": "co2",
+                "type": "env",
+                "value": "${Id}/sensor/co2/state"
+            },
+            {
+                "name": "co2warn",
+                "type": "env",
+                "value": "${Id}/switch/co2warn/state"
+            },
+            {
+                "name": "co2high",
+                "type": "env",
+                "value": "${Id}/switch/co2high/state"
+            },
+            {
+                "name": "status",
+                "type": "str",
+                "value": "${Id}/status"
+            },
+            {
+                "name": "Topic",
+                "type": "env",
+                "value": "${Id}"
+            }
+        ],
+        "color": "#DDAA99",
+        "status": {
+            "x": 900,
+            "y": 140,
+            "wires": [
+                {
+                    "id": "7fecd248.2f2544",
+                    "port": 0
+                }
+            ]
+        }
     },
     {
         "id": "ca185c1af81e0a09",
@@ -216,6 +310,248 @@
         "contextStore": ""
     },
     {
+        "id": "199287e0.46a798",
+        "type": "ccu-connection",
+        "name": "192.168.20.8",
+        "host": "192.168.20.8",
+        "regaEnabled": true,
+        "bcrfEnabled": true,
+        "iprfEnabled": true,
+        "virtEnabled": false,
+        "bcwiEnabled": false,
+        "cuxdEnabled": true,
+        "regaPoll": true,
+        "regaInterval": "30",
+        "rpcPingTimeout": "60",
+        "rpcInitAddress": "",
+        "rpcServerHost": "192.168.20.12",
+        "rpcBinPort": "2048",
+        "rpcXmlPort": "2049",
+        "tls": false,
+        "inSecure": false,
+        "authentication": false,
+        "username": "",
+        "password": "",
+        "queueTimeout": "5000",
+        "queuePause": "250",
+        "contextStore": ""
+    },
+    {
+        "id": "5cdf4104.dd067",
+        "type": "mqtt-broker",
+        "name": "nodered",
+        "broker": "192.168.20.12",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "b818fe83.218c38",
+        "type": "mqtt out",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2calib}",
+        "qos": "",
+        "retain": "",
+        "broker": "5cdf4104.dd067",
+        "x": 450,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1e50977d.ae26e1",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "Calib ON",
+        "func": "msg.payload = \"ON\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 60,
+        "wires": [
+            [
+                "b818fe83.218c38"
+            ]
+        ]
+    },
+    {
+        "id": "48c5e2e1.aab36c",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "392d6626.612b7a"
+            ]
+        ]
+    },
+    {
+        "id": "7fecd248.2f2544",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "set status OK",
+        "func": "msg.payload = {fill: \"green\", text: msg.payload + \"ppm\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd8124f5.bdcbe8",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2warn}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 190,
+        "y": 240,
+        "wires": [
+            [
+                "b18ce971.ecfcf"
+            ]
+        ]
+    },
+    {
+        "id": "9b3f9cf6.ba5738",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2high}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "470dd2d2.a24f74"
+            ]
+        ]
+    },
+    {
+        "id": "fd009eb7.af3b9",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "func": "var name = env.get(\"Topic\") || \"NA\";\nvar status = flow.get(\"status\") || \"online\";\nvar co2 = flow.get(\"co2\")*1 || 400;\nvar co2warn = flow.get(\"co2warn\") || \"OFF\";\nvar co2high = flow.get(\"co2high\") || \"OFF\";\n\nvar newMsg = { topic: name, payload: {co2 : co2, level: \"low\", status: status } }\n\nif(co2warn == \"ON\") { newMsg.payload.level = \"warn\" }\nif(co2high == \"ON\") { newMsg.payload.level = \"high\" }\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 750,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "392d6626.612b7a",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2",
+        "func": "flow.set(\"co2\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 140,
+        "wires": [
+            [
+                "7fecd248.2f2544",
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "b18ce971.ecfcf",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2warn",
+        "func": "flow.set(\"co2warn\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "470dd2d2.a24f74",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2high",
+        "func": "flow.set(\"co2high\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "4745cd45.dc30fc",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${status}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "dcf4d2a5.d2c72"
+            ]
+        ]
+    },
+    {
+        "id": "dcf4d2a5.d2c72",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2high",
+        "func": "flow.set(\"status\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
         "id": "38ec287f.814568",
         "type": "exec",
         "z": "781e2d3a48b04110",
@@ -265,6 +601,74 @@
         "wires": []
     },
     {
+        "id": "698737b14c04170c",
+        "type": "uibuilder",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "topic": "",
+        "url": "home",
+        "fwdInMessages": false,
+        "allowScripts": false,
+        "allowStyles": false,
+        "copyIndex": true,
+        "templateFolder": "vue",
+        "extTemplate": "",
+        "showfolder": false,
+        "reload": false,
+        "sourceFolder": "src",
+        "deployedVersion": "6.0.0",
+        "showMsgUib": false,
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7a2f080c754d5aae",
+        "type": "uib-sender",
+        "z": "e1c0c9780ef1442c",
+        "url": "home",
+        "name": "",
+        "topic": "",
+        "passthrough": false,
+        "return": false,
+        "outputs": 0,
+        "x": 590,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a3eca86f26a147a9",
+        "type": "inject",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "7a2f080c754d5aae"
+            ]
+        ]
+    },
+    {
         "id": "08c58347de41adad",
         "type": "debug",
         "z": "40f5e7c72cdecaab",
@@ -278,7 +682,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 820,
-        "y": 280,
+        "y": 200,
         "wires": []
     },
     {
@@ -288,7 +692,7 @@
         "name": "ccu/deviceName/datapoint",
         "info": "",
         "x": 330,
-        "y": 180,
+        "y": 100,
         "wires": []
     },
     {
@@ -303,7 +707,7 @@
         "finalize": "",
         "libs": [],
         "x": 280,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "adc5300179c0cf6a"
@@ -324,7 +728,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 280,
-        "y": 300,
+        "y": 220,
         "wires": []
     },
     {
@@ -359,7 +763,7 @@
         "cache": false,
         "topic": "${CCU}/${Interface}/${channelName}/${datapoint}",
         "x": 100,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "17525801781a0516",
@@ -382,7 +786,7 @@
         "org": "stHome",
         "bucket": "homematic",
         "x": 870,
-        "y": 220,
+        "y": 140,
         "wires": []
     },
     {
@@ -392,7 +796,7 @@
         "name": "db insert command",
         "info": "",
         "x": 570,
-        "y": 180,
+        "y": 100,
         "wires": []
     },
     {
@@ -407,7 +811,7 @@
         "finalize": "",
         "libs": [],
         "x": 540,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "08c58347de41adad",
@@ -422,7 +826,7 @@
         "name": "hm01",
         "info": "",
         "x": 90,
-        "y": 100,
+        "y": 60,
         "wires": []
     },
     {
@@ -439,7 +843,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 820,
-        "y": 600,
+        "y": 1220,
         "wires": []
     },
     {
@@ -449,7 +853,7 @@
         "name": "ccu/deviceName/datapoint",
         "info": "",
         "x": 330,
-        "y": 500,
+        "y": 1120,
         "wires": []
     },
     {
@@ -464,7 +868,7 @@
         "finalize": "",
         "libs": [],
         "x": 280,
-        "y": 540,
+        "y": 1160,
         "wires": [
             [
                 "c9670ffa43cfaa1a"
@@ -485,7 +889,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 280,
-        "y": 620,
+        "y": 1240,
         "wires": []
     },
     {
@@ -520,7 +924,7 @@
         "cache": false,
         "topic": "${CCU}/${Interface}/${channelName}/${datapoint}",
         "x": 100,
-        "y": 540,
+        "y": 1160,
         "wires": [
             [
                 "b433994a3f70550e",
@@ -543,7 +947,7 @@
         "org": "stHome",
         "bucket": "homematic",
         "x": 870,
-        "y": 540,
+        "y": 1160,
         "wires": []
     },
     {
@@ -553,7 +957,7 @@
         "name": "db insert command",
         "info": "",
         "x": 570,
-        "y": 500,
+        "y": 1120,
         "wires": []
     },
     {
@@ -568,7 +972,7 @@
         "finalize": "",
         "libs": [],
         "x": 540,
-        "y": 540,
+        "y": 1160,
         "wires": [
             [
                 "f439ff717cfe10d8",
@@ -583,8 +987,53 @@
         "name": "hm02",
         "info": "",
         "x": 90,
-        "y": 420,
+        "y": 1080,
         "wires": []
+    },
+    {
+        "id": "015806c6b825f34f",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "System.Building.Mode",
+        "ccuConfig": "ca185c1af81e0a09",
+        "topic": "ReGaHSS/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 140,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b02e8f4.68c08",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "System.Presence",
+        "ccuConfig": "199287e0.46a798",
+        "topic": "hm00/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 130,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "28764797.9e911",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "00-Outdoor-Pyrano-Diff:Avg",
+        "ccuConfig": "199287e0.46a798",
+        "topic": "hm00/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 160,
+        "y": 440,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "b941877f.c738b8",

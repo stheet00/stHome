@@ -8,6 +8,14 @@
         "env": []
     },
     {
+        "id": "e1c0c9780ef1442c",
+        "type": "tab",
+        "label": "UI",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "40f5e7c72cdecaab",
         "type": "tab",
         "label": "homematic",
@@ -30,6 +38,92 @@
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "20d4f02356ac495b",
+        "type": "tab",
+        "label": "Climate",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d0287b86.19f57",
+        "type": "subflow",
+        "name": "espCO2",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 140,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "1e50977d.ae26e1"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 900,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "fd009eb7.af3b9",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Id",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "co2calib",
+                "type": "env",
+                "value": "${Id}/switch/co2calib/command"
+            },
+            {
+                "name": "co2",
+                "type": "env",
+                "value": "${Id}/sensor/co2/state"
+            },
+            {
+                "name": "co2warn",
+                "type": "env",
+                "value": "${Id}/switch/co2warn/state"
+            },
+            {
+                "name": "co2high",
+                "type": "env",
+                "value": "${Id}/switch/co2high/state"
+            },
+            {
+                "name": "status",
+                "type": "str",
+                "value": "${Id}/status"
+            },
+            {
+                "name": "Topic",
+                "type": "env",
+                "value": "${Id}"
+            }
+        ],
+        "color": "#DDAA99",
+        "status": {
+            "x": 900,
+            "y": 140,
+            "wires": [
+                {
+                    "id": "7fecd248.2f2544",
+                    "port": 0
+                }
+            ]
+        }
     },
     {
         "id": "ca185c1af81e0a09",
@@ -243,6 +337,221 @@
         "contextStore": ""
     },
     {
+        "id": "5cdf4104.dd067",
+        "type": "mqtt-broker",
+        "name": "nodered",
+        "broker": "192.168.20.12",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "b818fe83.218c38",
+        "type": "mqtt out",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2calib}",
+        "qos": "",
+        "retain": "",
+        "broker": "5cdf4104.dd067",
+        "x": 450,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "1e50977d.ae26e1",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "Calib ON",
+        "func": "msg.payload = \"ON\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 280,
+        "y": 60,
+        "wires": [
+            [
+                "b818fe83.218c38"
+            ]
+        ]
+    },
+    {
+        "id": "48c5e2e1.aab36c",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "392d6626.612b7a"
+            ]
+        ]
+    },
+    {
+        "id": "7fecd248.2f2544",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "set status OK",
+        "func": "msg.payload = {fill: \"green\", text: msg.payload + \"ppm\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd8124f5.bdcbe8",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2warn}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 190,
+        "y": 240,
+        "wires": [
+            [
+                "b18ce971.ecfcf"
+            ]
+        ]
+    },
+    {
+        "id": "9b3f9cf6.ba5738",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${co2high}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "470dd2d2.a24f74"
+            ]
+        ]
+    },
+    {
+        "id": "fd009eb7.af3b9",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "func": "var name = env.get(\"Topic\") || \"NA\";\nvar status = flow.get(\"status\") || \"online\";\nvar co2 = flow.get(\"co2\")*1 || 400;\nvar co2warn = flow.get(\"co2warn\") || \"OFF\";\nvar co2high = flow.get(\"co2high\") || \"OFF\";\n\nvar newMsg = { topic: name, payload: {co2 : co2, level: \"low\", status: status } }\n\nif(co2warn == \"ON\") { newMsg.payload.level = \"warn\" }\nif(co2high == \"ON\") { newMsg.payload.level = \"high\" }\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 750,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "392d6626.612b7a",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2",
+        "func": "flow.set(\"co2\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 140,
+        "wires": [
+            [
+                "7fecd248.2f2544",
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "b18ce971.ecfcf",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2warn",
+        "func": "flow.set(\"co2warn\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "470dd2d2.a24f74",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2high",
+        "func": "flow.set(\"co2high\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
+        "id": "4745cd45.dc30fc",
+        "type": "mqtt in",
+        "z": "d0287b86.19f57",
+        "name": "",
+        "topic": "${status}",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "5cdf4104.dd067",
+        "inputs": 0,
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "dcf4d2a5.d2c72"
+            ]
+        ]
+    },
+    {
+        "id": "dcf4d2a5.d2c72",
+        "type": "function",
+        "z": "d0287b86.19f57",
+        "name": "flow.co2high",
+        "func": "flow.set(\"status\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 320,
+        "wires": [
+            [
+                "fd009eb7.af3b9"
+            ]
+        ]
+    },
+    {
         "id": "38ec287f.814568",
         "type": "exec",
         "z": "781e2d3a48b04110",
@@ -290,6 +599,74 @@
         "x": 140,
         "y": 60,
         "wires": []
+    },
+    {
+        "id": "698737b14c04170c",
+        "type": "uibuilder",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "topic": "",
+        "url": "home",
+        "fwdInMessages": false,
+        "allowScripts": false,
+        "allowStyles": false,
+        "copyIndex": true,
+        "templateFolder": "vue",
+        "extTemplate": "",
+        "showfolder": false,
+        "reload": false,
+        "sourceFolder": "src",
+        "deployedVersion": "6.0.0",
+        "showMsgUib": false,
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7a2f080c754d5aae",
+        "type": "uib-sender",
+        "z": "e1c0c9780ef1442c",
+        "url": "home",
+        "name": "",
+        "topic": "",
+        "passthrough": false,
+        "return": false,
+        "outputs": 0,
+        "x": 590,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a3eca86f26a147a9",
+        "type": "inject",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 380,
+        "wires": [
+            [
+                "7a2f080c754d5aae"
+            ]
+        ]
     },
     {
         "id": "08c58347de41adad",
@@ -1849,7 +2226,7 @@
         "type": "function",
         "z": "eda35aea761e62ca",
         "name": "Find data in result",
-        "func": "var ret = {};\nret.payload = {};\n\nvar solarPower = 0;\n\nmsg.payload.forEach(el => {\n\n    if(el.type === \"battery\"){\n        if(el._measurement === \"soc\") { ret.payload[\"openWB/set/houseBattery/%Soc\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/houseBattery/W\"] = el._value*(-1000) }\n    }\n\n    if (el.type === \"evu-meter\" && el.instance === \"1\" && el.location === \"basement\") {\n        if (el._measurement === \"ac_Voltage_AN\") { ret.payload[\"openWB/set/evu/VPhase1\"] = el._value }\n        if (el._measurement === \"ac_Voltage_BN\") { ret.payload[\"openWB/set/evu/VPhase2\"] = el._value }\n        if (el._measurement === \"ac_Voltage_CN\") { ret.payload[\"openWB/set/evu/VPhase3\"] = el._value }\n        if (el._measurement === \"ac_Current_A\") { ret.payload[\"openWB/set/evu/APhase1\"] = el._value }\n        if (el._measurement === \"ac_Current_B\") { ret.payload[\"openWB/set/evu/APhase2\"] = el._value }\n        if (el._measurement === \"ac_Current_C\") { ret.payload[\"openWB/set/evu/APhase3\"] = el._value }\n        if (el._measurement === \"ac_Power_A\") { ret.payload[\"openWB/evu/WPhase1\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_B\") { ret.payload[\"openWB/evu/WPhase2\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_C\") { ret.payload[\"openWB/evu/WPhase3\"] = el._value*1000 }\n        if (el._measurement === \"ac_Freq\") { ret.payload[\"openWB/set/evu/HzFrequenz\"] = el._value }\n        if (el._measurement === \"ac_PF_A\") { ret.payload[\"openWB/evu/PfPhase1\"] = el._value }\n        if (el._measurement === \"ac_PF_B\") { ret.payload[\"openWB/evu/PfPhase2\"] = el._value }\n        if (el._measurement === \"ac_PF_C\") { ret.payload[\"openWB/evu/PfPhase3\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/evu/W\"] = el._value*1000 }\n    }\n\n    if(el.type === \"inverter\"){\n        if (el._measurement === \"ac_Power\") { solarPower = solarPower + (el._value * 1000) }\n    }\n\n})\n\nret.payload[\"openWB/set/pv/1/W\"] = solarPower;\n\nreturn [ret, msg];",
+        "func": "var ret = {};\nret.payload = {};\n\nvar solarPower = 0;\n\nmsg.payload.forEach(el => {\n\n    if(el.type === \"battery\"){\n        if(el._measurement === \"soc\") { ret.payload[\"openWB/set/houseBattery/%Soc\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/houseBattery/W\"] = el._value*(-1000) }\n    }\n\n    if (el.type === \"evu-meter\" && el.instance === \"1\" && el.location === \"basement\") {\n        if (el._measurement === \"ac_Voltage_AN\") { ret.payload[\"openWB/set/evu/VPhase1\"] = el._value }\n        if (el._measurement === \"ac_Voltage_BN\") { ret.payload[\"openWB/set/evu/VPhase2\"] = el._value }\n        if (el._measurement === \"ac_Voltage_CN\") { ret.payload[\"openWB/set/evu/VPhase3\"] = el._value }\n        if (el._measurement === \"ac_Current_A\") { ret.payload[\"openWB/set/evu/APhase1\"] = el._value }\n        if (el._measurement === \"ac_Current_B\") { ret.payload[\"openWB/set/evu/APhase2\"] = el._value }\n        if (el._measurement === \"ac_Current_C\") { ret.payload[\"openWB/set/evu/APhase3\"] = el._value }\n        if (el._measurement === \"ac_Power_A\") { ret.payload[\"openWB/evu/WPhase1\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_B\") { ret.payload[\"openWB/evu/WPhase2\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_C\") { ret.payload[\"openWB/evu/WPhase3\"] = el._value*1000 }\n        if (el._measurement === \"ac_Freq\") { ret.payload[\"openWB/set/evu/HzFrequenz\"] = el._value }\n        if (el._measurement === \"ac_PF_A\") { ret.payload[\"openWB/evu/PfPhase1\"] = el._value }\n        if (el._measurement === \"ac_PF_B\") { ret.payload[\"openWB/evu/PfPhase2\"] = el._value }\n        if (el._measurement === \"ac_PF_C\") { ret.payload[\"openWB/evu/PfPhase3\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/evu/W\"] = el._value*(-1000) }\n    }\n\n    if(el.type === \"inverter\"){\n        if (el._measurement === \"ac_Power\") { solarPower = solarPower + (el._value * 1000) }\n    }\n\n})\n\nret.payload[\"openWB/set/pv/1/W\"] = solarPower;\n\nreturn [ret, msg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
