@@ -10,7 +10,7 @@
     {
         "id": "40f5e7c72cdecaab",
         "type": "tab",
-        "label": "testing",
+        "label": "homematic",
         "disabled": false,
         "info": "",
         "env": []
@@ -34,7 +34,7 @@
     {
         "id": "ca185c1af81e0a09",
         "type": "ccu-connection",
-        "name": "hm01",
+        "name": "hm00",
         "host": "192.168.20.8",
         "regaEnabled": true,
         "bcrfEnabled": true,
@@ -189,6 +189,60 @@
         "showLogs": true
     },
     {
+        "id": "6be926ebebb69961",
+        "type": "ccu-connection",
+        "name": "hm02",
+        "host": "192.168.20.7",
+        "regaEnabled": true,
+        "bcrfEnabled": true,
+        "iprfEnabled": true,
+        "virtEnabled": false,
+        "bcwiEnabled": false,
+        "cuxdEnabled": true,
+        "regaPoll": true,
+        "regaInterval": "30",
+        "rpcPingTimeout": "60",
+        "rpcInitAddress": "",
+        "rpcServerHost": "192.168.20.17",
+        "rpcBinPort": "2050",
+        "rpcXmlPort": "2051",
+        "tls": false,
+        "inSecure": false,
+        "authentication": false,
+        "username": "",
+        "password": "",
+        "queueTimeout": "5000",
+        "queuePause": "250",
+        "contextStore": ""
+    },
+    {
+        "id": "199287e0.46a798",
+        "type": "ccu-connection",
+        "name": "192.168.20.8",
+        "host": "192.168.20.8",
+        "regaEnabled": true,
+        "bcrfEnabled": true,
+        "iprfEnabled": true,
+        "virtEnabled": false,
+        "bcwiEnabled": false,
+        "cuxdEnabled": true,
+        "regaPoll": true,
+        "regaInterval": "30",
+        "rpcPingTimeout": "60",
+        "rpcInitAddress": "",
+        "rpcServerHost": "192.168.20.12",
+        "rpcBinPort": "2048",
+        "rpcXmlPort": "2049",
+        "tls": false,
+        "inSecure": false,
+        "authentication": false,
+        "username": "",
+        "password": "",
+        "queueTimeout": "5000",
+        "queuePause": "250",
+        "contextStore": ""
+    },
+    {
         "id": "38ec287f.814568",
         "type": "exec",
         "z": "781e2d3a48b04110",
@@ -251,7 +305,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 820,
-        "y": 280,
+        "y": 200,
         "wires": []
     },
     {
@@ -261,7 +315,7 @@
         "name": "ccu/deviceName/datapoint",
         "info": "",
         "x": 330,
-        "y": 180,
+        "y": 100,
         "wires": []
     },
     {
@@ -269,14 +323,14 @@
         "type": "function",
         "z": "40f5e7c72cdecaab",
         "name": "Transform",
-        "func": "return {\n    topic: \"hm01/\" + msg.deviceName + \"/\" + msg.datapoint,\n    payload: msg.payload,\n    ccu : \"hm01\",\n    name: msg.deviceName,\n    datapoint: msg.datapoint,\n    channelType: msg.channelType,\n    deviceType: msg.deviceType};\n",
+        "func": "return {\n    topic: \"hm00/\" + msg.deviceName + \"/\" + msg.datapoint,\n    payload: msg.payload,\n    ccu : \"hm00\",\n    name: msg.deviceName,\n    datapoint: msg.datapoint,\n    channelType: msg.channelType,\n    deviceType: msg.deviceType};\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 280,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "adc5300179c0cf6a"
@@ -297,7 +351,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 280,
-        "y": 300,
+        "y": 220,
         "wires": []
     },
     {
@@ -332,37 +386,12 @@
         "cache": false,
         "topic": "${CCU}/${Interface}/${channelName}/${datapoint}",
         "x": 100,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "17525801781a0516",
                 "58fd7081e276ba97"
             ]
-        ]
-    },
-    {
-        "id": "7248a9ca24edbde3",
-        "type": "uibuilder",
-        "z": "40f5e7c72cdecaab",
-        "name": "home",
-        "topic": "",
-        "url": "home",
-        "fwdInMessages": false,
-        "allowScripts": false,
-        "allowStyles": false,
-        "copyIndex": true,
-        "templateFolder": "vue",
-        "extTemplate": "",
-        "showfolder": false,
-        "reload": false,
-        "sourceFolder": "src",
-        "deployedVersion": "6.0.0",
-        "showMsgUib": false,
-        "x": 340,
-        "y": 80,
-        "wires": [
-            [],
-            []
         ]
     },
     {
@@ -380,7 +409,7 @@
         "org": "stHome",
         "bucket": "homematic",
         "x": 870,
-        "y": 220,
+        "y": 140,
         "wires": []
     },
     {
@@ -390,7 +419,7 @@
         "name": "db insert command",
         "info": "",
         "x": 570,
-        "y": 180,
+        "y": 100,
         "wires": []
     },
     {
@@ -405,7 +434,7 @@
         "finalize": "",
         "libs": [],
         "x": 540,
-        "y": 220,
+        "y": 140,
         "wires": [
             [
                 "08c58347de41adad",
@@ -414,59 +443,21 @@
         ]
     },
     {
-        "id": "ce452e615d092013",
-        "type": "influxdb in",
+        "id": "b7c2c4ed945b8842",
+        "type": "comment",
         "z": "40f5e7c72cdecaab",
-        "influxdb": "1e1a0e45bfb2abe0",
-        "name": "Get last",
-        "query": "from(bucket: \"homematic\")\n    |> range(start: -1h)\n    |> last()\n\n\n",
-        "rawOutput": false,
-        "precision": "",
-        "retentionPolicy": "",
-        "org": "stHome",
-        "x": 820,
-        "y": 420,
-        "wires": [
-            [
-                "b74941c18f95880d"
-            ]
-        ]
+        "name": "hm01",
+        "info": "",
+        "x": 90,
+        "y": 60,
+        "wires": []
     },
     {
-        "id": "c66df25b3fa8aef4",
-        "type": "inject",
-        "z": "40f5e7c72cdecaab",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 540,
-        "y": 420,
-        "wires": [
-            [
-                "ce452e615d092013"
-            ]
-        ]
-    },
-    {
-        "id": "b74941c18f95880d",
+        "id": "f439ff717cfe10d8",
         "type": "debug",
         "z": "40f5e7c72cdecaab",
-        "name": "debug 3",
-        "active": true,
+        "name": "debug 12",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -474,9 +465,198 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1160,
-        "y": 420,
+        "x": 820,
+        "y": 1220,
         "wires": []
+    },
+    {
+        "id": "b5395dfa58057544",
+        "type": "comment",
+        "z": "40f5e7c72cdecaab",
+        "name": "ccu/deviceName/datapoint",
+        "info": "",
+        "x": 330,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "b433994a3f70550e",
+        "type": "function",
+        "z": "40f5e7c72cdecaab",
+        "name": "Transform",
+        "func": "return {\n    topic: \"hm02/\" + msg.deviceName + \"/\" + msg.datapoint,\n    payload: msg.payload,\n    ccu : \"hm02\",\n    name: msg.deviceName,\n    datapoint: msg.datapoint,\n    channelType: msg.channelType,\n    deviceType: msg.deviceType};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 1160,
+        "wires": [
+            [
+                "c9670ffa43cfaa1a"
+            ]
+        ]
+    },
+    {
+        "id": "0d4f5f6d6b9bb5bc",
+        "type": "debug",
+        "z": "40f5e7c72cdecaab",
+        "name": "debug 13",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "5a0dcc7d8875c10e",
+        "type": "ccu-rpc-event",
+        "z": "40f5e7c72cdecaab",
+        "name": "",
+        "iface": "",
+        "ccuConfig": "6be926ebebb69961",
+        "rooms": "",
+        "roomsRx": "str",
+        "functions": "",
+        "functionsRx": "str",
+        "device": "",
+        "deviceRx": "str",
+        "deviceName": "",
+        "deviceNameRx": "str",
+        "deviceType": "",
+        "deviceTypeRx": "str",
+        "channel": "",
+        "channelRx": "str",
+        "channelName": "",
+        "channelNameRx": "str",
+        "channelType": "",
+        "channelTypeRx": "str",
+        "channelIndex": "",
+        "channelIndexRx": "str",
+        "datapoint": "",
+        "datapointRx": "str",
+        "change": true,
+        "working": false,
+        "cache": false,
+        "topic": "${CCU}/${Interface}/${channelName}/${datapoint}",
+        "x": 100,
+        "y": 1160,
+        "wires": [
+            [
+                "b433994a3f70550e",
+                "0d4f5f6d6b9bb5bc"
+            ]
+        ]
+    },
+    {
+        "id": "d41f98057e8efe63",
+        "type": "influxdb out",
+        "z": "40f5e7c72cdecaab",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "homematic",
+        "x": 870,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "b1e44a5dac46367e",
+        "type": "comment",
+        "z": "40f5e7c72cdecaab",
+        "name": "db insert command",
+        "info": "",
+        "x": 570,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "c9670ffa43cfaa1a",
+        "type": "function",
+        "z": "40f5e7c72cdecaab",
+        "name": "function 2",
+        "func": "var inMsg = {\n    measurement: msg.datapoint,\n    payload :\n    [{\n// fields\n        value: msg.payload\n    },\n    {\n// tags\n        ccu: msg.ccu,\n        type: msg.deviceType,\n        name: msg.name,\n        channelType: msg.channelType\n    }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 1160,
+        "wires": [
+            [
+                "f439ff717cfe10d8",
+                "d41f98057e8efe63"
+            ]
+        ]
+    },
+    {
+        "id": "c6b7dca43779fd8c",
+        "type": "comment",
+        "z": "40f5e7c72cdecaab",
+        "name": "hm02",
+        "info": "",
+        "x": 90,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "015806c6b825f34f",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "System.Building.Mode",
+        "ccuConfig": "ca185c1af81e0a09",
+        "topic": "ReGaHSS/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 140,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b02e8f4.68c08",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "System.Presence",
+        "ccuConfig": "199287e0.46a798",
+        "topic": "hm00/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 130,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "28764797.9e911",
+        "type": "ccu-sysvar",
+        "z": "40f5e7c72cdecaab",
+        "name": "00-Outdoor-Pyrano-Diff:Avg",
+        "ccuConfig": "199287e0.46a798",
+        "topic": "hm00/${Name}",
+        "change": true,
+        "cache": true,
+        "x": 160,
+        "y": 440,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "b941877f.c738b8",
@@ -1607,6 +1787,192 @@
         ]
     },
     {
+        "id": "3a279a63d5b73b35",
+        "type": "comment",
+        "z": "eda35aea761e62ca",
+        "name": "Pass values to wallbox",
+        "info": "",
+        "x": 160,
+        "y": 2020,
+        "wires": []
+    },
+    {
+        "id": "fe3402e4e8dc65db",
+        "type": "influxdb in",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"powerMan\")\n  |> range(start: -5m)\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 390,
+        "y": 2080,
+        "wires": [
+            [
+                "7ff69c831ff6d77d"
+            ]
+        ]
+    },
+    {
+        "id": "299e291c4e203802",
+        "type": "inject",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "25",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 2080,
+        "wires": [
+            [
+                "fe3402e4e8dc65db"
+            ]
+        ]
+    },
+    {
+        "id": "7ff69c831ff6d77d",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Find data in result",
+        "func": "var ret = {};\nret.payload = {};\n\nvar solarPower = 0;\n\nmsg.payload.forEach(el => {\n\n    if(el.type === \"battery\"){\n        if(el._measurement === \"soc\") { ret.payload[\"openWB/set/houseBattery/%Soc\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/houseBattery/W\"] = el._value*(-1000) }\n    }\n\n    if (el.type === \"evu-meter\" && el.instance === \"1\" && el.location === \"basement\") {\n        if (el._measurement === \"ac_Voltage_AN\") { ret.payload[\"openWB/set/evu/VPhase1\"] = el._value }\n        if (el._measurement === \"ac_Voltage_BN\") { ret.payload[\"openWB/set/evu/VPhase2\"] = el._value }\n        if (el._measurement === \"ac_Voltage_CN\") { ret.payload[\"openWB/set/evu/VPhase3\"] = el._value }\n        if (el._measurement === \"ac_Current_A\") { ret.payload[\"openWB/set/evu/APhase1\"] = el._value }\n        if (el._measurement === \"ac_Current_B\") { ret.payload[\"openWB/set/evu/APhase2\"] = el._value }\n        if (el._measurement === \"ac_Current_C\") { ret.payload[\"openWB/set/evu/APhase3\"] = el._value }\n        if (el._measurement === \"ac_Power_A\") { ret.payload[\"openWB/evu/WPhase1\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_B\") { ret.payload[\"openWB/evu/WPhase2\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_C\") { ret.payload[\"openWB/evu/WPhase3\"] = el._value*1000 }\n        if (el._measurement === \"ac_Freq\") { ret.payload[\"openWB/set/evu/HzFrequenz\"] = el._value }\n        if (el._measurement === \"ac_PF_A\") { ret.payload[\"openWB/evu/PfPhase1\"] = el._value }\n        if (el._measurement === \"ac_PF_B\") { ret.payload[\"openWB/evu/PfPhase2\"] = el._value }\n        if (el._measurement === \"ac_PF_C\") { ret.payload[\"openWB/evu/PfPhase3\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/evu/W\"] = el._value*1000 }\n    }\n\n    if(el.type === \"inverter\"){\n        if (el._measurement === \"ac_Power\") { solarPower = solarPower + (el._value * 1000) }\n    }\n\n})\n\nret.payload[\"openWB/set/pv/1/W\"] = solarPower;\n\nreturn [ret, msg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2080,
+        "wires": [
+            [
+                "e9f78dd6.fd1e5",
+                "d32058da1d1a72d7"
+            ],
+            [
+                "f752732d9861cebe"
+            ]
+        ]
+    },
+    {
+        "id": "d32058da1d1a72d7",
+        "type": "debug",
+        "z": "eda35aea761e62ca",
+        "name": "debug 10",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 2160,
+        "wires": []
+    },
+    {
+        "id": "e9f78dd6.fd1e5",
+        "type": "split",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 970,
+        "y": 2080,
+        "wires": [
+            [
+                "cd19f4f5.e9f1e"
+            ]
+        ]
+    },
+    {
+        "id": "cd19f4f5.e9f1e",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "add topic",
+        "func": "msg.topic = msg.parts.key\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1120,
+        "y": 2080,
+        "wires": [
+            [
+                "37b732c9.8cdfb6"
+            ]
+        ]
+    },
+    {
+        "id": "37b732c9.8cdfb6",
+        "type": "rbe",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "property": "payload",
+        "x": 1270,
+        "y": 2080,
+        "wires": [
+            [
+                "5a4fcb90.c10b84"
+            ]
+        ]
+    },
+    {
+        "id": "5a4fcb90.c10b84",
+        "type": "mqtt out",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "25b4ae1f.f6e792",
+        "x": 1420,
+        "y": 2080,
+        "wires": []
+    },
+    {
+        "id": "f752732d9861cebe",
+        "type": "debug",
+        "z": "eda35aea761e62ca",
+        "name": "debug 11",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 2200,
+        "wires": []
+    },
+    {
         "id": "d0727bd3.f5d738",
         "type": "modbus-read",
         "z": "16d854753ce10409",
@@ -1653,7 +2019,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = { \ntopic: \"seCal\",\npayload: [\n    {k: 'i_AC_Power', v: round(int16(40084) * scalefactor(40085) / 1000, 2)}, //I_AC_Power\n    {k: 'i_DC_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2)}  // I_DC_Power\n]}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = { \ntopic: \"seCal\",\npayload: [\n    {k: 'ac_Power', v: round(int16(40084) * scalefactor(40085) / 1000, 2)}, //I_AC_Power\n    {k: 'dc_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2)}  // I_DC_Power\n]}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1691,7 +2057,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "Transform",
-        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"shelter\",\n            instance: 2\n        }]\n}\n\nreturn inMsg;",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"solaredge\",\n            group: \"pv\",\n            location: \"shelter\",\n            type: \"inverter\",\n            instance: 2\n        }]\n}\n\nreturn inMsg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1798,7 +2164,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'i_AC_PowerReal', v: round(int16(40084) * scalefactor(40085) / 1000, 2) },\n        //{ k: 'i_DC_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2) }\n        // solar power will be calculated dc/ac-solar = I_AC_Power - bat_AC_Power\n    ]\n}\n\n/*\nif (msg.payload.I_DC_Power < -0.02) {\n    msg.payload.I_AC_Power = msg.payload.I_DC_Power;\n}\n*/\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'ac_PowerReal', v: round(int16(40084) * scalefactor(40085) / 1000, 2) },\n        //{ k: 'dc_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2) }\n        // solar power will be calculated dc/ac-solar = inv_ac_Power - bat_dc_Power\n    ]\n}\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1817,7 +2183,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'm_AC_Current', v: round(int16(40191) * scalefactor(40195), 2) },\n        { k: 'm_AC_Current_A', v: round(int16(40192) * scalefactor(40195), 2) },\n        { k: 'm_AC_Current_B', v: round(int16(40193) * scalefactor(40195), 2)},\n        { k: 'm_AC_Current_C', v: round(int16(40194) * scalefactor(40195), 2)},\n        { k: 'm_AC_Voltage_AN', v: round(int16(40197) * scalefactor(40204), 2)},\n        { k: 'm_AC_Voltage_BN', v: round(int16(40198) * scalefactor(40204), 2)},\n        { k: 'm_AC_Voltage_CN', v: round(int16(40199) * scalefactor(40204), 2)},\n        { k: 'm_AC_Power', v: round(int16(40207) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_A', v: round(int16(40208) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_B', v: round(int16(40209) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Power_C', v: round(int16(40210) * scalefactor(40211) / 1000, 2)},\n        { k: 'm_AC_Freq', v: round(int16(40205) * scalefactor(40206), 2)},\n        { k: 'm_AC_PF', v: round(int16(40222) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_A', v: round(int16(40223) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_B', v: round(int16(40224) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_PF_C', v: round(int16(40225) * scalefactor(40226) / 100, 2)},\n        { k: 'm_AC_VAR', v: round(int16(40217) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_A', v: round(int16(40218) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_B', v: round(int16(40219) * scalefactor(40221) / 1000, 2)},\n        { k: 'm_AC_VAR_C', v: round(int16(40220) * scalefactor(40221) / 1000, 2)},\n\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40191) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'ac_Current', v: round(int16(40191) * scalefactor(40195), 2) },\n        { k: 'ac_Current_A', v: round(int16(40192) * scalefactor(40195), 2) },\n        { k: 'ac_Current_B', v: round(int16(40193) * scalefactor(40195), 2)},\n        { k: 'ac_Current_C', v: round(int16(40194) * scalefactor(40195), 2)},\n        { k: 'ac_Voltage_AN', v: round(int16(40197) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_BN', v: round(int16(40198) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_CN', v: round(int16(40199) * scalefactor(40204), 2)},\n        { k: 'ac_Power', v: round(int16(40207) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_A', v: round(int16(40208) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_B', v: round(int16(40209) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_C', v: round(int16(40210) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Freq', v: round(int16(40205) * scalefactor(40206), 2)},\n        { k: 'ac_PF', v: round(int16(40222) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_A', v: round(int16(40223) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_B', v: round(int16(40224) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_C', v: round(int16(40225) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_VAR', v: round(int16(40217) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_A', v: round(int16(40218) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_B', v: round(int16(40219) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_C', v: round(int16(40220) * scalefactor(40221) / 1000, 2)},\n\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40191) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1855,7 +2221,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "Transform",
-        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            type: \"inverter\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1885,7 +2251,7 @@
         "y": 220,
         "wires": [
             [
-                "e24f2cd6249335ab"
+                "e3a479f13f237931"
             ]
         ]
     },
@@ -1975,7 +2341,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\n// source: https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'bat_DC_Power', v: round(float(62836)*(-1) / 1000, 2) }\n    ]\n}\ncol.payload[1] = { k: 'bat_AC_Power', v: round(col.payload[0].v * (0.91), 2) }\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62836) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\n// source: https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'dc_Power', v: round(float(62836)*(-1) / 1000, 2) }\n    ]\n}\ncol.payload[1] = { k: 'ac_Power', v: round(col.payload[0].v * (0.91), 2) }\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62836) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2014,7 +2380,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "Transform",
-        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"battery\",\n            group: \"pv\",\n            location: \"basement\",\n            instance: 1\n        }]\n}\n\nif(msg.payload.k == \"bat_State\") {\n    var cmMode = \"Off\";\n    if (msg.payload.v === 3) { cmMode = \"Charge\" }\n    if (msg.payload.v === 4) { cmMode = \"Discharge\" }\n    if (msg.payload.v === 6) { cmMode = \"Cons-Charging\" }\n    inMsg.payload[1][\"valueN\"] = cmMode;\n}\n\nreturn inMsg;",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"BYD\",\n            group: \"pv\",\n            location: \"basement\",\n            type: \"battery\",\n            instance: 1\n        }]\n}\n\nif(msg.payload.k == \"chargeState\") {\n    var cmMode = \"Off\";\n    if (msg.payload.v === 3) { cmMode = \"Charge\" }\n    if (msg.payload.v === 4) { cmMode = \"Discharge\" }\n    if (msg.payload.v === 6) { cmMode = \"Cons-Charging\" }\n    inMsg.payload[1][\"valueN\"] = cmMode;\n}\n\nreturn inMsg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2041,8 +2407,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 800,
-        "y": 220,
+        "x": 560,
+        "y": 420,
         "wires": []
     },
     {
@@ -2082,7 +2448,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\n// source https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'bat_soc', v: float(62852) },\n        { k: 'bat_State', v: uint16(62854) }\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62852) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\n// source https://www.photovoltaikforum.com/thread/120980-akkustand-per-modbus-tcp-auslesen-solaredge-lg-resu-10h/?pageNo=1\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'soc', v: float(62852) },\n        { k: 'chargeState', v: uint16(62854) }\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address - 62852) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction float(address) {\n    var tbuf = buf.subarray(word(address), 4);\n    var tbuf2 = tbuf.swap16().swap32();\n\n   return tbuf2.readFloatBE(0);\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2131,7 +2497,7 @@
         "z": "16d854753ce10409",
         "influxdb": "1e1a0e45bfb2abe0",
         "name": "",
-        "query": "from(bucket: \"powerMan\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"i_AC_PowerReal\" or r[\"_measurement\"] == \"bat_AC_Power\")\n  |> filter(fn: (r) => r[\"instance\"] == \"1\")\n  |> last()",
+        "query": "s1 = from(bucket: \"powerMan\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ac_PowerReal\")\n  |> filter(fn: (r) => r[\"instance\"] == \"1\")\n  |> filter(fn: (r) => r[\"type\"] == \"inverter\")\n  |> last()\n\n  s2 = from(bucket: \"powerMan\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ac_Power\")\n  |> filter(fn: (r) => r[\"instance\"] == \"1\")\n  |> filter(fn: (r) => r[\"type\"] == \"battery\")\n  |> last()\n\n  union(tables: [s1,s2])",
         "rawOutput": false,
         "precision": "",
         "retentionPolicy": "",
@@ -2195,7 +2561,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "Calc solar power i_DC_Power",
-        "func": "var bat_AC_Power = msg.payload.find(i => i._measurement == \"bat_AC_Power\");\nvar i_AC_PowerReal = msg.payload.find(i => i._measurement == \"i_AC_PowerReal\");\n\nvar i_AC_Power = round(i_AC_PowerReal._value - bat_AC_Power._value, 2);\nvar i_DC_Power = round(i_AC_Power*1.08, 2);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'i_AC_Power', v: i_AC_Power },\n        { k: 'i_DC_Power', v: i_DC_Power }\n    ]\n}\n\nreturn col;\n\nfunction round(value, decimals) {\n    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);\n} ",
+        "func": "var bat_AC_Power = msg.payload.find(i => i._measurement == \"ac_Power\");\nvar i_AC_PowerReal = msg.payload.find(i => i._measurement == \"ac_PowerReal\");\n\nvar i_AC_Power = round(i_AC_PowerReal._value - bat_AC_Power._value, 2);\nvar i_DC_Power = round(i_AC_Power*1.08, 2);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'ac_Power', v: i_AC_Power },\n        { k: 'dc_Power', v: i_DC_Power }\n    ]\n}\n\nreturn col;\n\nfunction round(value, decimals) {\n    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2232,7 +2598,7 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "Transform",
-        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            type: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"solaredge\",\n            group: \"pv\",\n            location: \"roof\",\n            type: \"inverter\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2263,6 +2629,25 @@
         "wires": [
             [
                 "9b137f730ca8c370"
+            ]
+        ]
+    },
+    {
+        "id": "e3a479f13f237931",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"solaredge\",\n            group: \"evu\",\n            location: \"basement\",\n            type: \"evu-meter\",\n            instance: 1\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 220,
+        "wires": [
+            [
+                "38413cfbad00b12d"
             ]
         ]
     }
