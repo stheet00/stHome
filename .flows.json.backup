@@ -167,18 +167,6 @@
         "rejectUnauthorized": false
     },
     {
-        "id": "b56a2f8c.4744d",
-        "type": "tls-config",
-        "name": "local-tls",
-        "cert": "",
-        "key": "",
-        "ca": "",
-        "certname": "",
-        "keyname": "",
-        "caname": "",
-        "verifyservercert": false
-    },
-    {
         "id": "25b4ae1f.f6e792",
         "type": "mqtt-broker",
         "name": "openWB",
@@ -254,35 +242,6 @@
         "parallelUnitIdsAllowed": false
     },
     {
-        "id": "8136bb04f2f3061c",
-        "type": "modbus-client",
-        "name": "",
-        "clienttype": "tcp",
-        "bufferCommands": true,
-        "stateLogEnabled": false,
-        "queueLogEnabled": false,
-        "failureLogEnabled": true,
-        "tcpHost": "127.0.0.1",
-        "tcpPort": "502",
-        "tcpType": "DEFAULT",
-        "serialPort": "/dev/ttyUSB",
-        "serialType": "RTU-BUFFERD",
-        "serialBaudrate": "9600",
-        "serialDatabits": "8",
-        "serialStopbits": "1",
-        "serialParity": "none",
-        "serialConnectionDelay": "100",
-        "serialAsciiResponseStartDelimiter": "0x3A",
-        "unit_id": "1",
-        "commandDelay": "1",
-        "clientTimeout": "1000",
-        "reconnectOnTimeout": true,
-        "reconnectTimeout": "2000",
-        "parallelUnitIdsAllowed": true,
-        "showWarnings": true,
-        "showLogs": true
-    },
-    {
         "id": "6be926ebebb69961",
         "type": "ccu-connection",
         "name": "hm02",
@@ -300,33 +259,6 @@
         "rpcServerHost": "192.168.20.17",
         "rpcBinPort": "2050",
         "rpcXmlPort": "2051",
-        "tls": false,
-        "inSecure": false,
-        "authentication": false,
-        "username": "",
-        "password": "",
-        "queueTimeout": "5000",
-        "queuePause": "250",
-        "contextStore": ""
-    },
-    {
-        "id": "199287e0.46a798",
-        "type": "ccu-connection",
-        "name": "192.168.20.8",
-        "host": "192.168.20.8",
-        "regaEnabled": true,
-        "bcrfEnabled": true,
-        "iprfEnabled": true,
-        "virtEnabled": false,
-        "bcwiEnabled": false,
-        "cuxdEnabled": true,
-        "regaPoll": true,
-        "regaInterval": "30",
-        "rpcPingTimeout": "60",
-        "rpcInitAddress": "",
-        "rpcServerHost": "192.168.20.12",
-        "rpcBinPort": "2048",
-        "rpcXmlPort": "2049",
         "tls": false,
         "inSecure": false,
         "authentication": false,
@@ -601,31 +533,6 @@
         "wires": []
     },
     {
-        "id": "698737b14c04170c",
-        "type": "uibuilder",
-        "z": "e1c0c9780ef1442c",
-        "name": "",
-        "topic": "",
-        "url": "home",
-        "fwdInMessages": false,
-        "allowScripts": false,
-        "allowStyles": false,
-        "copyIndex": true,
-        "templateFolder": "vue",
-        "extTemplate": "",
-        "showfolder": false,
-        "reload": false,
-        "sourceFolder": "src",
-        "deployedVersion": "6.0.0",
-        "showMsgUib": false,
-        "x": 540,
-        "y": 220,
-        "wires": [
-            [],
-            []
-        ]
-    },
-    {
         "id": "7a2f080c754d5aae",
         "type": "uib-sender",
         "z": "e1c0c9780ef1442c",
@@ -667,6 +574,50 @@
                 "7a2f080c754d5aae"
             ]
         ]
+    },
+    {
+        "id": "fc24ab83960a00e0",
+        "type": "uibuilder",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "topic": "",
+        "url": "home",
+        "fwdInMessages": false,
+        "allowScripts": false,
+        "allowStyles": false,
+        "copyIndex": true,
+        "templateFolder": "svelte-basic",
+        "extTemplate": "",
+        "showfolder": false,
+        "reload": false,
+        "sourceFolder": "dist",
+        "deployedVersion": "6.0.0",
+        "showMsgUib": false,
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "e281cdb2d1a7f260"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "e281cdb2d1a7f260",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 220,
+        "wires": []
     },
     {
         "id": "08c58347de41adad",
@@ -1010,7 +961,7 @@
         "type": "ccu-sysvar",
         "z": "40f5e7c72cdecaab",
         "name": "System.Presence",
-        "ccuConfig": "199287e0.46a798",
+        "ccuConfig": "ca185c1af81e0a09",
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
@@ -1025,12 +976,38 @@
         "type": "ccu-sysvar",
         "z": "40f5e7c72cdecaab",
         "name": "00-Outdoor-Pyrano-Diff:Avg",
-        "ccuConfig": "199287e0.46a798",
+        "ccuConfig": "ca185c1af81e0a09",
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
         "x": 160,
         "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "515074044189c9b5",
+        "type": "ccu-value",
+        "z": "40f5e7c72cdecaab",
+        "name": "",
+        "iface": "BidCos-RF",
+        "channel": "LEQ1082652:1 -01-Keller-Temp:1",
+        "datapoint": "TEMPERATURE",
+        "mode": "",
+        "start": true,
+        "change": true,
+        "cache": false,
+        "queue": false,
+        "on": 0,
+        "onType": "undefined",
+        "ramp": 0,
+        "rampType": "undefined",
+        "working": false,
+        "ccuConfig": "ca185c1af81e0a09",
+        "topic": "${CCU}/${Interface}/${channel}/${datapoint}",
+        "x": 130,
+        "y": 520,
         "wires": [
             []
         ]
@@ -2179,7 +2156,7 @@
         "z": "eda35aea761e62ca",
         "influxdb": "1e1a0e45bfb2abe0",
         "name": "",
-        "query": "from(bucket: \"powerMan\")\n  |> range(start: -5m)\n  |> last()",
+        "query": "from(bucket: \"powerMan\")\n  |> range(start: -1h)\n  |> last()",
         "rawOutput": false,
         "precision": "",
         "retentionPolicy": "",
@@ -2226,7 +2203,7 @@
         "type": "function",
         "z": "eda35aea761e62ca",
         "name": "Find data in result",
-        "func": "var ret = {};\nret.payload = {};\n\nvar solarPower = 0;\n\nmsg.payload.forEach(el => {\n\n    if(el.type === \"battery\"){\n        if(el._measurement === \"soc\") { ret.payload[\"openWB/set/houseBattery/%Soc\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/houseBattery/W\"] = el._value*(-1000) }\n    }\n\n    if (el.type === \"evu-meter\" && el.instance === \"1\" && el.location === \"basement\") {\n        if (el._measurement === \"ac_Voltage_AN\") { ret.payload[\"openWB/set/evu/VPhase1\"] = el._value }\n        if (el._measurement === \"ac_Voltage_BN\") { ret.payload[\"openWB/set/evu/VPhase2\"] = el._value }\n        if (el._measurement === \"ac_Voltage_CN\") { ret.payload[\"openWB/set/evu/VPhase3\"] = el._value }\n        if (el._measurement === \"ac_Current_A\") { ret.payload[\"openWB/set/evu/APhase1\"] = el._value }\n        if (el._measurement === \"ac_Current_B\") { ret.payload[\"openWB/set/evu/APhase2\"] = el._value }\n        if (el._measurement === \"ac_Current_C\") { ret.payload[\"openWB/set/evu/APhase3\"] = el._value }\n        if (el._measurement === \"ac_Power_A\") { ret.payload[\"openWB/evu/WPhase1\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_B\") { ret.payload[\"openWB/evu/WPhase2\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_C\") { ret.payload[\"openWB/evu/WPhase3\"] = el._value*1000 }\n        if (el._measurement === \"ac_Freq\") { ret.payload[\"openWB/set/evu/HzFrequenz\"] = el._value }\n        if (el._measurement === \"ac_PF_A\") { ret.payload[\"openWB/evu/PfPhase1\"] = el._value }\n        if (el._measurement === \"ac_PF_B\") { ret.payload[\"openWB/evu/PfPhase2\"] = el._value }\n        if (el._measurement === \"ac_PF_C\") { ret.payload[\"openWB/evu/PfPhase3\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/evu/W\"] = el._value*1000 }\n    }\n\n    if(el.type === \"inverter\"){\n        if (el._measurement === \"ac_Power\") { solarPower = solarPower + (el._value * 1000) }\n    }\n\n})\n\nret.payload[\"openWB/set/pv/1/W\"] = solarPower;\n\nreturn [ret, msg];",
+        "func": "var ret = {};\nret.payload = {};\n\nvar solarPower = 0;\n\nmsg.payload.forEach(el => {\n\n    if(el.type === \"battery\"){\n        if(el._measurement === \"soc\") { ret.payload[\"openWB/set/houseBattery/%Soc\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/houseBattery/W\"] = el._value*(-1000) }\n    }\n\n    if (el.type === \"evu-meter\" && el.instance === \"1\" && el.location === \"basement\") {\n        if (el._measurement === \"ac_Voltage_AN\") { ret.payload[\"openWB/set/evu/VPhase1\"] = el._value }\n        if (el._measurement === \"ac_Voltage_BN\") { ret.payload[\"openWB/set/evu/VPhase2\"] = el._value }\n        if (el._measurement === \"ac_Voltage_CN\") { ret.payload[\"openWB/set/evu/VPhase3\"] = el._value }\n        if (el._measurement === \"ac_Current_A\") { ret.payload[\"openWB/set/evu/APhase1\"] = el._value }\n        if (el._measurement === \"ac_Current_B\") { ret.payload[\"openWB/set/evu/APhase2\"] = el._value }\n        if (el._measurement === \"ac_Current_C\") { ret.payload[\"openWB/set/evu/APhase3\"] = el._value }\n        if (el._measurement === \"ac_Power_A\") { ret.payload[\"openWB/evu/WPhase1\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_B\") { ret.payload[\"openWB/evu/WPhase2\"] = el._value*1000 }\n        if (el._measurement === \"ac_Power_C\") { ret.payload[\"openWB/evu/WPhase3\"] = el._value*1000 }\n        if (el._measurement === \"ac_Freq\") { ret.payload[\"openWB/set/evu/HzFrequenz\"] = el._value }\n        if (el._measurement === \"ac_PF_A\") { ret.payload[\"openWB/evu/PfPhase1\"] = el._value }\n        if (el._measurement === \"ac_PF_B\") { ret.payload[\"openWB/evu/PfPhase2\"] = el._value }\n        if (el._measurement === \"ac_PF_C\") { ret.payload[\"openWB/evu/PfPhase3\"] = el._value }\n        if (el._measurement === \"ac_Power\") { ret.payload[\"openWB/set/evu/W\"] = el._value*(1000) }\n    }\n\n    if(el.type === \"inverter\"){\n        if (el._measurement === \"ac_Power\") { solarPower = solarPower + (el._value * 1000) }\n    }\n\n})\n\nret.payload[\"openWB/set/pv/1/W\"] = solarPower;\n\nreturn [ret, msg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -2249,7 +2226,7 @@
         "type": "debug",
         "z": "eda35aea761e62ca",
         "name": "debug 10",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -2350,38 +2327,6 @@
         "wires": []
     },
     {
-        "id": "d0727bd3.f5d738",
-        "type": "modbus-read",
-        "z": "16d854753ce10409",
-        "name": "SolarEdge 3",
-        "topic": "",
-        "showStatusActivities": false,
-        "logIOActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "unitid": "1",
-        "dataType": "HoldingRegister",
-        "adr": "40083",
-        "quantity": "20",
-        "rate": "20",
-        "rateUnit": "s",
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "server": "7e9912ee.546204",
-        "useIOFile": false,
-        "ioFile": "",
-        "useIOForPayload": false,
-        "emptyMsgOnFail": false,
-        "x": 130,
-        "y": 560,
-        "wires": [
-            [],
-            [
-                "33449a937d186c07"
-            ]
-        ]
-    },
-    {
         "id": "ba1fed775a9a4167",
         "type": "comment",
         "z": "16d854753ce10409",
@@ -2402,7 +2347,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 800,
         "y": 560,
         "wires": [
             [
@@ -2421,7 +2366,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
+        "x": 1010,
         "y": 560,
         "wires": [
             [
@@ -2440,7 +2385,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 760,
+        "x": 1200,
         "y": 560,
         "wires": [
             [
@@ -2462,7 +2407,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
+        "x": 1440,
         "y": 560,
         "wires": []
     },
@@ -2480,7 +2425,7 @@
         "retentionPolicyV18Flux": "",
         "org": "stHome",
         "bucket": "powerMan",
-        "x": 1130,
+        "x": 1570,
         "y": 160,
         "wires": []
     },
@@ -2505,38 +2450,6 @@
         "wires": []
     },
     {
-        "id": "49429e0d.b198d",
-        "type": "modbus-read",
-        "z": "16d854753ce10409",
-        "name": "SolarEdge 3",
-        "topic": "",
-        "showStatusActivities": false,
-        "logIOActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "unitid": "1",
-        "dataType": "HoldingRegister",
-        "adr": "40083",
-        "quantity": "20",
-        "rate": "20",
-        "rateUnit": "s",
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "server": "78b1c87b.391bc8",
-        "useIOFile": false,
-        "ioFile": "",
-        "useIOForPayload": false,
-        "emptyMsgOnFail": false,
-        "x": 130,
-        "y": 160,
-        "wires": [
-            [],
-            [
-                "6602d1b7.b24d78"
-            ]
-        ]
-    },
-    {
         "id": "6602d1b7.b24d78",
         "type": "function",
         "z": "16d854753ce10409",
@@ -2547,7 +2460,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 800,
         "y": 160,
         "wires": [
             [
@@ -2560,13 +2473,13 @@
         "type": "function",
         "z": "16d854753ce10409",
         "name": "mod -> JSON",
-        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'ac_Current', v: round(int16(40191) * scalefactor(40195), 2) },\n        { k: 'ac_Current_A', v: round(int16(40192) * scalefactor(40195), 2) },\n        { k: 'ac_Current_B', v: round(int16(40193) * scalefactor(40195), 2)},\n        { k: 'ac_Current_C', v: round(int16(40194) * scalefactor(40195), 2)},\n        { k: 'ac_Voltage_AN', v: round(int16(40197) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_BN', v: round(int16(40198) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_CN', v: round(int16(40199) * scalefactor(40204), 2)},\n        { k: 'ac_Power', v: round(int16(40207) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_A', v: round(int16(40208) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_B', v: round(int16(40209) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Power_C', v: round(int16(40210) * scalefactor(40211) / 1000, 2)},\n        { k: 'ac_Freq', v: round(int16(40205) * scalefactor(40206), 2)},\n        { k: 'ac_PF', v: round(int16(40222) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_A', v: round(int16(40223) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_B', v: round(int16(40224) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_C', v: round(int16(40225) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_VAR', v: round(int16(40217) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_A', v: round(int16(40218) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_B', v: round(int16(40219) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_C', v: round(int16(40220) * scalefactor(40221) / 1000, 2)},\n\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40191) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = {\n    topic: \"seCal\",\n    payload: [\n        { k: 'ac_Current', v: round(int16(40191) * scalefactor(40195), 2) },\n        { k: 'ac_Current_A', v: round(int16(40192) * scalefactor(40195), 2) },\n        { k: 'ac_Current_B', v: round(int16(40193) * scalefactor(40195), 2)},\n        { k: 'ac_Current_C', v: round(int16(40194) * scalefactor(40195), 2)},\n        { k: 'ac_Voltage_AN', v: round(int16(40197) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_BN', v: round(int16(40198) * scalefactor(40204), 2)},\n        { k: 'ac_Voltage_CN', v: round(int16(40199) * scalefactor(40204), 2)},\n        { k: 'ac_Power', v: round(int16(40207) * scalefactor(40211) / (-1000), 2)},\n        { k: 'ac_Power_A', v: round(int16(40208) * scalefactor(40211) / (-1000), 2)},\n        { k: 'ac_Power_B', v: round(int16(40209) * scalefactor(40211) / (-1000), 2)},\n        { k: 'ac_Power_C', v: round(int16(40210) * scalefactor(40211) / (-1000), 2)},\n        { k: 'ac_Freq', v: round(int16(40205) * scalefactor(40206), 2)},\n        { k: 'ac_PF', v: round(int16(40222) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_A', v: round(int16(40223) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_B', v: round(int16(40224) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_PF_C', v: round(int16(40225) * scalefactor(40226) / 100, 2)},\n        { k: 'ac_VAR', v: round(int16(40217) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_A', v: round(int16(40218) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_B', v: round(int16(40219) * scalefactor(40221) / 1000, 2)},\n        { k: 'ac_VAR_C', v: round(int16(40220) * scalefactor(40221) / 1000, 2)},\n\n    ]\n}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40191) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 800,
         "y": 220,
         "wires": [
             [
@@ -2585,7 +2498,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
+        "x": 1010,
         "y": 160,
         "wires": [
             [
@@ -2604,7 +2517,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 760,
+        "x": 1200,
         "y": 160,
         "wires": [
             [
@@ -2624,43 +2537,11 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
+        "x": 1010,
         "y": 220,
         "wires": [
             [
                 "e3a479f13f237931"
-            ]
-        ]
-    },
-    {
-        "id": "ce1bef37409bf886",
-        "type": "modbus-read",
-        "z": "16d854753ce10409",
-        "name": "",
-        "topic": "",
-        "showStatusActivities": false,
-        "logIOActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "unitid": "",
-        "dataType": "HoldingRegister",
-        "adr": "40190",
-        "quantity": "40",
-        "rate": "20",
-        "rateUnit": "s",
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "server": "78b1c87b.391bc8",
-        "useIOFile": false,
-        "ioFile": "",
-        "useIOForPayload": false,
-        "emptyMsgOnFail": false,
-        "x": 130,
-        "y": 220,
-        "wires": [
-            [],
-            [
-                "a987abfaf067f0d7"
             ]
         ]
     },
@@ -2677,41 +2558,9 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 980,
+        "x": 1420,
         "y": 80,
         "wires": []
-    },
-    {
-        "id": "7092266835921eab",
-        "type": "modbus-read",
-        "z": "16d854753ce10409",
-        "name": "",
-        "topic": "",
-        "showStatusActivities": false,
-        "logIOActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "unitid": "",
-        "dataType": "HoldingRegister",
-        "adr": "62836",
-        "quantity": "2",
-        "rate": "20",
-        "rateUnit": "s",
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "server": "78b1c87b.391bc8",
-        "useIOFile": false,
-        "ioFile": "",
-        "useIOForPayload": false,
-        "emptyMsgOnFail": false,
-        "x": 130,
-        "y": 300,
-        "wires": [
-            [],
-            [
-                "f5bd18124162dace"
-            ]
-        ]
     },
     {
         "id": "f5bd18124162dace",
@@ -2724,7 +2573,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 800,
         "y": 300,
         "wires": [
             [
@@ -2744,7 +2593,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
+        "x": 1010,
         "y": 300,
         "wires": [
             [
@@ -2763,7 +2612,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 760,
+        "x": 1200,
         "y": 300,
         "wires": [
             [
@@ -2784,41 +2633,9 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 560,
+        "x": 1000,
         "y": 420,
         "wires": []
-    },
-    {
-        "id": "621e46aa9130767c",
-        "type": "modbus-read",
-        "z": "16d854753ce10409",
-        "name": "",
-        "topic": "",
-        "showStatusActivities": false,
-        "logIOActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "unitid": "",
-        "dataType": "HoldingRegister",
-        "adr": "62852",
-        "quantity": "4",
-        "rate": "20",
-        "rateUnit": "s",
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "server": "78b1c87b.391bc8",
-        "useIOFile": false,
-        "ioFile": "",
-        "useIOForPayload": false,
-        "emptyMsgOnFail": false,
-        "x": 130,
-        "y": 360,
-        "wires": [
-            [],
-            [
-                "defe7e798dc09814"
-            ]
-        ]
     },
     {
         "id": "defe7e798dc09814",
@@ -2831,7 +2648,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
+        "x": 800,
         "y": 360,
         "wires": [
             [
@@ -2850,7 +2667,7 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 570,
+        "x": 1010,
         "y": 360,
         "wires": [
             [
@@ -3020,11 +2837,428 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 760,
+        "x": 1200,
         "y": 220,
         "wires": [
             [
                 "38413cfbad00b12d"
+            ]
+        ]
+    },
+    {
+        "id": "d4baa9bd90cdbbba",
+        "type": "catch",
+        "z": "16d854753ce10409",
+        "name": "",
+        "scope": [
+            "49429e0d.b198d",
+            "ce1bef37409bf886",
+            "621e46aa9130767c",
+            "7092266835921eab"
+        ],
+        "uncaught": false,
+        "x": 90,
+        "y": 860,
+        "wires": [
+            [
+                "e5adb74a0a4ba432"
+            ]
+        ]
+    },
+    {
+        "id": "e5adb74a0a4ba432",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 14",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "52201ce2af035752",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "Catch WR1 & WR2",
+        "info": "",
+        "x": 130,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "7cc25a30955b0867",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "17",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "0d9bc0570abe2ce9"
+            ]
+        ]
+    },
+    {
+        "id": "0d9bc0570abe2ce9",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 4",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 40083, 'quantity': 20 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 160,
+        "wires": [
+            [
+                "0fd6783b8f14b9b7"
+            ]
+        ]
+    },
+    {
+        "id": "0fd6783b8f14b9b7",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [],
+            [
+                "6602d1b7.b24d78"
+            ]
+        ]
+    },
+    {
+        "id": "fba9e079cc7edd3a",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "19",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.3",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "72395258fc6d8d2e"
+            ]
+        ]
+    },
+    {
+        "id": "72395258fc6d8d2e",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 5",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 40190, 'quantity': 40 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "0812cf39a11ea6e7"
+            ]
+        ]
+    },
+    {
+        "id": "0812cf39a11ea6e7",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 220,
+        "wires": [
+            [],
+            [
+                "a987abfaf067f0d7"
+            ]
+        ]
+    },
+    {
+        "id": "58f0dc74ac89f8fd",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "21",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.4",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "b52624251e2b1aee"
+            ]
+        ]
+    },
+    {
+        "id": "b52624251e2b1aee",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 6",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 62836, 'quantity': 2 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "a80974420ecac515"
+            ]
+        ]
+    },
+    {
+        "id": "a80974420ecac515",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [],
+            [
+                "f5bd18124162dace"
+            ]
+        ]
+    },
+    {
+        "id": "415f8591239dafc6",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "b1af57428bb2b57a"
+            ]
+        ]
+    },
+    {
+        "id": "b1af57428bb2b57a",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 7",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 62852, 'quantity': 4 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "91531eb9c95fd38c"
+            ]
+        ]
+    },
+    {
+        "id": "91531eb9c95fd38c",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "78b1c87b.391bc8",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 360,
+        "wires": [
+            [],
+            [
+                "defe7e798dc09814"
+            ]
+        ]
+    },
+    {
+        "id": "50b1e45fca7f7952",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "20",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.2",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 560,
+        "wires": [
+            [
+                "80c3f25763f2418a"
+            ]
+        ]
+    },
+    {
+        "id": "80c3f25763f2418a",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 8",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 40083, 'quantity': 20 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 560,
+        "wires": [
+            [
+                "43a8a049e9bdab1b"
+            ]
+        ]
+    },
+    {
+        "id": "43a8a049e9bdab1b",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "7e9912ee.546204",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 560,
+        "wires": [
+            [],
+            [
+                "33449a937d186c07"
             ]
         ]
     }

@@ -1,0 +1,12 @@
+UI Framework
+https://www.svelteui.org/
+
+Comment uib-styles.css in dis/global.css
+
+Radix Icon Set
+https://github.com/brisklemonade/radix-icons-svelte
+
+    Icon overview
+    https://icons.radix-ui.com/
+
+https://remixicon.com/
