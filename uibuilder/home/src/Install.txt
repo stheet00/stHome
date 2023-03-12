@@ -1,6 +1,12 @@
 UI Framework
 https://www.svelteui.org/
 
+Slider
+https://sveltematerialui.com/demo/slider/
+
+Carousel
+https://vadimkorr.github.io/svelte-carousel/
+
 Comment uib-styles.css in dis/global.css
 
 Radix Icon Set

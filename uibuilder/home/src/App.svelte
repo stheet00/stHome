@@ -9,6 +9,7 @@
 	import MyXlBulb from './components/MyXlBulb/MyXlBulb.svelte';
 	import { SimpleGrid, Stack, Space } from '@svelteuidev/core';
 	import Carousel from 'svelte-carousel';
+    import MyXlTemp from './components/MyXlTemp/MyXlTemp.svelte';
 	
 
 	// These are "props" - variables that can be used in a parent component when mounting this component & used in the UI
@@ -40,8 +41,8 @@
 	<SvelteUIProvider withNormalizeCSS withGlobalStyles themeObserver={'dark'}>
 		<Carousel>
 			<SimpleGrid cols={3} override={{margin:5}}>
+				<MyXlTemp />
 				<MyXlBulb />
-				<div>2</div>
 				<div>3</div>
 			</SimpleGrid>
 				
