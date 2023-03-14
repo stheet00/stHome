@@ -48,6 +48,14 @@
         "env": []
     },
     {
+        "id": "5df865bf3e142031",
+        "type": "tab",
+        "label": "Light",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "d0287b86.19f57",
         "type": "subflow",
         "name": "espCO2",
@@ -533,6 +541,172 @@
         "wires": []
     },
     {
+        "id": "fc24ab83960a00e0",
+        "type": "uibuilder",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "topic": "",
+        "url": "home",
+        "fwdInMessages": false,
+        "allowScripts": false,
+        "allowStyles": false,
+        "copyIndex": true,
+        "templateFolder": "svelte-basic",
+        "extTemplate": "",
+        "showfolder": false,
+        "reload": false,
+        "sourceFolder": "dist",
+        "deployedVersion": "6.0.0",
+        "showMsgUib": false,
+        "x": 100,
+        "y": 180,
+        "wires": [
+            [
+                "e281cdb2d1a7f260"
+            ],
+            [
+                "3283e680.04337a"
+            ]
+        ]
+    },
+    {
+        "id": "e281cdb2d1a7f260",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "debug 15",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 360,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7435b7ddab5d9d58",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "!!! How to develop the UI --> Details",
+        "info": "Docs: http://192.168.20.17:1880/uibuilder/techdocs/#/svelte\n\n(1) open console and login\n(2) navigate to ~/.node-red/projects/stHome/uibuilder/home\n(3) execute: npm run dev",
+        "x": 180,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "5817b2f6.8024bc",
+        "type": "change",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "RoomHeatChg",
+                "tot": "global"
+            },
+            {
+                "t": "delete",
+                "p": "uibuilderCtrl",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "b0595157eb15f6ba"
+            ]
+        ]
+    },
+    {
+        "id": "3283e680.04337a",
+        "type": "switch",
+        "z": "e1c0c9780ef1442c",
+        "name": "ui ctrl",
+        "property": "uibuilderCtrl",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "client connect",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ready for content",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 3,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "5817b2f6.8024bc"
+            ],
+            [
+                "5817b2f6.8024bc"
+            ],
+            [
+                "6dded821.4040c8"
+            ]
+        ]
+    },
+    {
+        "id": "6dded821.4040c8",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 530,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "07bbeebdbba51021",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "Send data on re-connect",
+        "info": "",
+        "x": 410,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "b0595157eb15f6ba",
+        "type": "link out",
+        "z": "e1c0c9780ef1442c",
+        "name": "ui_client_connect",
+        "mode": "link",
+        "links": [
+            "7e459f7597b25f7a",
+            "a0b69e2a0299aac9",
+            "7fb445d726a4195f"
+        ],
+        "x": 725,
+        "y": 220,
+        "wires": []
+    },
+    {
         "id": "7a2f080c754d5aae",
         "type": "uib-sender",
         "z": "e1c0c9780ef1442c",
@@ -542,12 +716,145 @@
         "passthrough": false,
         "return": false,
         "outputs": 0,
-        "x": 590,
-        "y": 380,
+        "x": 830,
+        "y": 480,
         "wires": []
     },
     {
         "id": "a3eca86f26a147a9",
+        "type": "inject",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "504faa687aa090c8"
+            ]
+        ]
+    },
+    {
+        "id": "504faa687aa090c8",
+        "type": "influxdb in",
+        "z": "e1c0c9780ef1442c",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"homematic\")\n  |> range(start: -8h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ACTUAL_TEMPERATURE\" or r[\"_measurement\"] == \"HUMIDITY\" or r[\"_measurement\"] == \"TEMPERATURE\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 350,
+        "y": 480,
+        "wires": [
+            [
+                "f0bac037c693c79e"
+            ]
+        ]
+    },
+    {
+        "id": "f0bac037c693c79e",
+        "type": "change",
+        "z": "e1c0c9780ef1442c",
+        "name": "indb/homematic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "indb/homematic",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 480,
+        "wires": [
+            [
+                "7a2f080c754d5aae",
+                "e8719c1a52c90712"
+            ]
+        ]
+    },
+    {
+        "id": "e8719c1a52c90712",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "debug 16",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "7e459f7597b25f7a",
+        "type": "link in",
+        "z": "e1c0c9780ef1442c",
+        "name": "link in 1",
+        "links": [
+            "b0595157eb15f6ba"
+        ],
+        "x": 125,
+        "y": 540,
+        "wires": [
+            [
+                "504faa687aa090c8"
+            ]
+        ]
+    },
+    {
+        "id": "53bc2ba72735bec3",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "Send Temp and Humi",
+        "info": "",
+        "x": 140,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "483e0105c1db5394",
+        "type": "uib-sender",
+        "z": "e1c0c9780ef1442c",
+        "url": "home",
+        "name": "",
+        "topic": "",
+        "passthrough": false,
+        "return": false,
+        "outputs": 0,
+        "x": 830,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "5bdb3e673b3a1a32",
         "type": "inject",
         "z": "e1c0c9780ef1442c",
         "name": "",
@@ -567,47 +874,67 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 360,
-        "y": 380,
+        "x": 120,
+        "y": 700,
         "wires": [
             [
-                "7a2f080c754d5aae"
+                "58049fb082e4b034"
             ]
         ]
     },
     {
-        "id": "fc24ab83960a00e0",
-        "type": "uibuilder",
+        "id": "58049fb082e4b034",
+        "type": "influxdb in",
         "z": "e1c0c9780ef1442c",
+        "influxdb": "1e1a0e45bfb2abe0",
         "name": "",
-        "topic": "",
-        "url": "home",
-        "fwdInMessages": false,
-        "allowScripts": false,
-        "allowStyles": false,
-        "copyIndex": true,
-        "templateFolder": "svelte-basic",
-        "extTemplate": "",
-        "showfolder": false,
-        "reload": false,
-        "sourceFolder": "dist",
-        "deployedVersion": "6.0.0",
-        "showMsgUib": false,
-        "x": 540,
-        "y": 220,
+        "query": "from(bucket: \"homematic\")\n  |> range(start: -7d)\n  |> filter(fn: (r) => r[\"name\"] == \"00-Flur-Licht\" or r[\"name\"] == \"00-Treppe-Licht\" or r[\"name\"] == \"00-Wohn-Licht\")\n  |> filter(fn: (r) => r[\"_measurement\"] == \"LEVEL\" or r[\"_measurement\"] == \"STATE\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 350,
+        "y": 700,
         "wires": [
             [
-                "e281cdb2d1a7f260"
-            ],
-            []
+                "b9a64d1573623abb"
+            ]
         ]
     },
     {
-        "id": "e281cdb2d1a7f260",
+        "id": "b9a64d1573623abb",
+        "type": "change",
+        "z": "e1c0c9780ef1442c",
+        "name": "indb/homematic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "indb/homematic",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 700,
+        "wires": [
+            [
+                "483e0105c1db5394",
+                "6ce7bb4638b16d39"
+            ]
+        ]
+    },
+    {
+        "id": "6ce7bb4638b16d39",
         "type": "debug",
         "z": "e1c0c9780ef1442c",
-        "name": "debug 15",
-        "active": true,
+        "name": "debug 17",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -615,8 +942,45 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 740,
-        "y": 220,
+        "x": 840,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "a0b69e2a0299aac9",
+        "type": "link in",
+        "z": "e1c0c9780ef1442c",
+        "name": "link in 2",
+        "links": [
+            "16f623084ab3c45c",
+            "b0595157eb15f6ba"
+        ],
+        "x": 105,
+        "y": 840,
+        "wires": [
+            [
+                "58049fb082e4b034"
+            ]
+        ]
+    },
+    {
+        "id": "7135dcb9800f8115",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "Send Status Lights",
+        "info": "",
+        "x": 130,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "e17cf6e3899db37f",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "UI reconnect / hm trigger",
+        "info": "",
+        "x": 150,
+        "y": 800,
         "wires": []
     },
     {
@@ -633,7 +997,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 820,
-        "y": 200,
+        "y": 100,
         "wires": []
     },
     {
@@ -754,19 +1118,22 @@
         "id": "adc5300179c0cf6a",
         "type": "function",
         "z": "40f5e7c72cdecaab",
-        "name": "function 1",
-        "func": "var inMsg = {\n    measurement: msg.datapoint,\n    payload :\n    [{\n// fields\n        value: msg.payload\n    },\n    {\n// tags\n        ccu: msg.ccu,\n        type: msg.deviceType,\n        name: msg.name,\n        channelType: msg.channelType\n    }]\n}\n\nreturn inMsg;",
-        "outputs": 1,
+        "name": "hm trg switch/dimmer",
+        "func": "var inMsg = {\n    measurement: msg.datapoint,\n    payload :\n    [{\n// fields\n        value: msg.payload\n    },\n    {\n// tags\n        ccu: msg.ccu,\n        type: msg.deviceType,\n        name: msg.name,\n        channelType: msg.channelType\n    }]\n}\n\nif (msg.channelType == \"SWITCH\" || msg.channelType == \"DIMMER\")\n{\n    var trg = {\n        topic: \"homematic/trigger/\" + msg.channelType,\n        payload: msg.channelType,\n        type : \"trigger\"\n    }\n    return [inMsg, trg];\n}\n\nreturn [inMsg, null];\n",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 540,
+        "x": 580,
         "y": 140,
         "wires": [
             [
                 "08c58347de41adad",
                 "1bca9db95a3587df"
+            ],
+            [
+                "ef9dcf1673702e72"
             ]
         ]
     },
@@ -987,30 +1354,60 @@
         ]
     },
     {
-        "id": "515074044189c9b5",
-        "type": "ccu-value",
+        "id": "19a16d9205d63763",
+        "type": "debug",
+        "z": "40f5e7c72cdecaab",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ef9dcf1673702e72",
+        "type": "delay",
         "z": "40f5e7c72cdecaab",
         "name": "",
-        "iface": "BidCos-RF",
-        "channel": "LEQ1082652:1 -01-Keller-Temp:1",
-        "datapoint": "TEMPERATURE",
-        "mode": "",
-        "start": true,
-        "change": true,
-        "cache": false,
-        "queue": false,
-        "on": 0,
-        "onType": "undefined",
-        "ramp": 0,
-        "rampType": "undefined",
-        "working": false,
-        "ccuConfig": "ca185c1af81e0a09",
-        "topic": "${CCU}/${Interface}/${channel}/${datapoint}",
-        "x": 130,
-        "y": 520,
+        "pauseType": "queue",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 760,
+        "y": 220,
         "wires": [
-            []
+            [
+                "16f623084ab3c45c",
+                "19a16d9205d63763"
+            ]
         ]
+    },
+    {
+        "id": "16f623084ab3c45c",
+        "type": "link out",
+        "z": "40f5e7c72cdecaab",
+        "name": "hm_trg_switch_dimmer",
+        "mode": "link",
+        "links": [
+            "a0b69e2a0299aac9"
+        ],
+        "x": 1195,
+        "y": 220,
+        "wires": []
     },
     {
         "id": "b941877f.c738b8",

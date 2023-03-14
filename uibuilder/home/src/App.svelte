@@ -6,16 +6,20 @@
 
 	import { onMount } from 'svelte'
 	import { SvelteUIProvider } from '@svelteuidev/core';
-	import MyXlBulb from './components/MyXlBulb/MyXlBulb.svelte';
 	import { SimpleGrid, Stack, Space } from '@svelteuidev/core';
 	import Carousel from 'svelte-carousel';
-    import MyXlTemp from './components/MyXlTemp/MyXlTemp.svelte';
+    import MyXlClimate from './components/MyXlClimate/MyXlClimate.svelte';
+    import { getMyXlClimateData } from './data/MyClimateData';
+	import MyXlLight from './components/MyXlLight/MyXlLight.svelte';
+	import { getMyXlLightData } from './data/MyLightData';
 	
 
 	// These are "props" - variables that can be used in a parent component when mounting this component & used in the UI
 	export let uibsend
-	export let nrMsg = ''
-	export let myGreeting = 'Hello there from App.svelte! Send me a msg containing msg.greeting to replace this text.'
+
+	let InDbData = {};
+	let MyXlClimateData = [];
+	let MyXlLightData = [];
 
 	// Only runs when this component is being mounted (e.g. once, when the page is loaded)
     onMount(() => {
@@ -28,10 +32,18 @@
 		// Listen for new messages from Node-RED/uibuilder
         uibuilder.onChange('msg', function(msg){
             console.info('msg received from Node-RED server:', msg)
-			// Push an HTML highlighted visualisation of the msg to a prop so we can display it
-            nrMsg = syntaxHighlight(msg)
-			// Update the greeting if present in the msg
-			if ( msg.greeting ) myGreeting = msg.greeting
+
+			let topic = msg.topic;
+
+			msg.payload.forEach((e) => {		
+				if(topic == "indb/homematic") {
+					let key = topic+"/"+e._measurement+"/"+e.name;
+					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e._value, _time : e._time};
+				}	
+			});
+
+			MyXlClimateData = getMyXlClimateData(InDbData);
+			MyXlLightData = getMyXlLightData(InDbData);
         })
 
     }) // --- End of onMount --- //
@@ -41,8 +53,8 @@
 	<SvelteUIProvider withNormalizeCSS withGlobalStyles themeObserver={'dark'}>
 		<Carousel>
 			<SimpleGrid cols={3} override={{margin:5}}>
-				<MyXlTemp />
-				<MyXlBulb />
+				<MyXlClimate values={MyXlClimateData}/>
+				<MyXlLight values={MyXlLightData}/>
 				<div>3</div>
 			</SimpleGrid>
 				
