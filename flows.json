@@ -18,7 +18,7 @@
     {
         "id": "40f5e7c72cdecaab",
         "type": "tab",
-        "label": "homematic",
+        "label": "HM",
         "disabled": false,
         "info": "",
         "env": []
@@ -35,6 +35,14 @@
         "id": "16d854753ce10409",
         "type": "tab",
         "label": "PowerMan",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4a8d304c950302af",
+        "type": "tab",
+        "label": "HUE",
         "disabled": false,
         "info": "",
         "env": []
@@ -280,6 +288,16 @@
         "willTopic": "",
         "willQos": "0",
         "willPayload": ""
+    },
+    {
+        "id": "f08c81db3cddc150",
+        "type": "hue-bridge",
+        "name": "Philips hue",
+        "bridge": "192.168.20.9",
+        "key": "3gEgzVYstYBUi7VNjHLhtw2lqGWVJZmNUzbnCn1u",
+        "worker": "10",
+        "autoupdates": true,
+        "disableupdates": false
     },
     {
         "id": "b818fe83.218c38",
@@ -684,7 +702,8 @@
         "links": [
             "7e459f7597b25f7a",
             "a0b69e2a0299aac9",
-            "7fb445d726a4195f"
+            "7fb445d726a4195f",
+            "4254b51be531da74"
         ],
         "x": 725,
         "y": 220,
@@ -939,8 +958,8 @@
             "16f623084ab3c45c",
             "b0595157eb15f6ba"
         ],
-        "x": 105,
-        "y": 840,
+        "x": 165,
+        "y": 760,
         "wires": [
             [
                 "58049fb082e4b034"
@@ -951,20 +970,145 @@
         "id": "7135dcb9800f8115",
         "type": "comment",
         "z": "e1c0c9780ef1442c",
-        "name": "Send Status Lights",
+        "name": "Send Status HM Lights",
         "info": "",
-        "x": 130,
+        "x": 140,
         "y": 640,
         "wires": []
     },
     {
-        "id": "e17cf6e3899db37f",
+        "id": "fa8f8e0e04df3c58",
+        "type": "inject",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 900,
+        "wires": [
+            [
+                "ed143ab96e5059a6"
+            ]
+        ]
+    },
+    {
+        "id": "ed143ab96e5059a6",
+        "type": "influxdb in",
+        "z": "e1c0c9780ef1442c",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"hue\")\n  |> range(start: -7d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"light\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"name\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 350,
+        "y": 900,
+        "wires": [
+            [
+                "09d5df95de815567"
+            ]
+        ]
+    },
+    {
+        "id": "09d5df95de815567",
+        "type": "change",
+        "z": "e1c0c9780ef1442c",
+        "name": "indb/homematic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "indb/hue",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 900,
+        "wires": [
+            [
+                "43173c319c8f0761",
+                "4c9d27e2675408dc"
+            ]
+        ]
+    },
+    {
+        "id": "4c9d27e2675408dc",
+        "type": "uib-sender",
+        "z": "e1c0c9780ef1442c",
+        "url": "home",
+        "name": "",
+        "topic": "",
+        "passthrough": false,
+        "return": false,
+        "outputs": 0,
+        "x": 830,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "43173c319c8f0761",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "debug 21",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "4254b51be531da74",
+        "type": "link in",
+        "z": "e1c0c9780ef1442c",
+        "name": "link in 3",
+        "links": [
+            "b0595157eb15f6ba",
+            "f6e0cdc821022ed9",
+            "ad23091c1b4b008a"
+        ],
+        "x": 165,
+        "y": 960,
+        "wires": [
+            [
+                "ed143ab96e5059a6"
+            ]
+        ]
+    },
+    {
+        "id": "892f62584a0d87b2",
         "type": "comment",
         "z": "e1c0c9780ef1442c",
-        "name": "UI reconnect / hm trigger",
+        "name": "Send Status HUE Lights",
         "info": "",
         "x": 150,
-        "y": 800,
+        "y": 840,
         "wires": []
     },
     {
@@ -3650,6 +3794,615 @@
             [],
             [
                 "33449a937d186c07"
+            ]
+        ]
+    },
+    {
+        "id": "d5a3537652f8eb92",
+        "type": "function",
+        "z": "4a8d304c950302af",
+        "name": "hue trg switch/dimmer",
+        "func": "var inMsg = {\n    measurement: \"light\",\n    payload :\n    [{\n// fields\n        value: msg.updated.payload.on,\n        level: msg.updated.payload.brightness,\n        color: msg.updated.payload.hex, \n    },\n    {\n// tags\n      name : msg.updated.info.name,\n      type: \"single\"\n    }]\n}\n\nvar trg = {\n    topic: \"hue/trigger/light\",\n    payload: \"light\",\n    type : \"trigger\"\n}\nreturn [inMsg, trg];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 180,
+        "wires": [
+            [
+                "14ee93b6d83f0991",
+                "515e94a47a9fad21"
+            ],
+            [
+                "b28a64c39a1627a5"
+            ]
+        ]
+    },
+    {
+        "id": "14ee93b6d83f0991",
+        "type": "debug",
+        "z": "4a8d304c950302af",
+        "name": "debug 19",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "515e94a47a9fad21",
+        "type": "influxdb out",
+        "z": "4a8d304c950302af",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "hue",
+        "x": 970,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "38a650f24f631a88",
+        "type": "comment",
+        "z": "4a8d304c950302af",
+        "name": "Trigger Light",
+        "info": "",
+        "x": 930,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b28a64c39a1627a5",
+        "type": "delay",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "pauseType": "queue",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 980,
+        "y": 300,
+        "wires": [
+            [
+                "a4023e90a64e5bc7"
+            ]
+        ]
+    },
+    {
+        "id": "b93ae83ab08081c2",
+        "type": "debug",
+        "z": "4a8d304c950302af",
+        "name": "debug 20",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "12e9d428f0563db7",
+        "type": "hue-bridge-node",
+        "z": "4a8d304c950302af",
+        "name": "Hue Bridge",
+        "bridge": "f08c81db3cddc150",
+        "autoupdates": false,
+        "skipglobalevents": false,
+        "initevents": false,
+        "x": 95,
+        "y": 180,
+        "wires": [
+            [
+                "b93ae83ab08081c2",
+                "8633130ff99ad5b9"
+            ]
+        ],
+        "l": false
+    },
+    {
+        "id": "8633130ff99ad5b9",
+        "type": "switch",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "property": "updated.info.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "light",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "d5a3537652f8eb92"
+            ]
+        ]
+    },
+    {
+        "id": "a4023e90a64e5bc7",
+        "type": "link out",
+        "z": "4a8d304c950302af",
+        "name": "hue_trg_lights",
+        "mode": "link",
+        "links": [
+            "0e0c74ac285ea27d",
+            "333d718cbce7c275",
+            "8152d9ede302e0de"
+        ],
+        "x": 1235,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "0e0c74ac285ea27d",
+        "type": "link in",
+        "z": "4a8d304c950302af",
+        "name": "link in 4",
+        "links": [
+            "a4023e90a64e5bc7"
+        ],
+        "x": 85,
+        "y": 520,
+        "wires": [
+            [
+                "2252212dae9d3a31"
+            ]
+        ]
+    },
+    {
+        "id": "5efbbe751b5dbe10",
+        "type": "influxdb in",
+        "z": "4a8d304c950302af",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"hue\")\n  |> range(start: -7d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"light\")\n  |> filter(fn: (r) => r[\"name\"] == \"00-Wohn-L02\" or r[\"name\"] == \"00-Wohn-L03\" or r[\"name\"] == \"00-Wohn-L04\" or r[\"name\"] == \"00-Wohn-L05\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"name\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 550,
+        "y": 520,
+        "wires": [
+            [
+                "464c938f92bc2dca"
+            ]
+        ]
+    },
+    {
+        "id": "dd0d05b98bd54ba4",
+        "type": "comment",
+        "z": "4a8d304c950302af",
+        "name": "Group: 00-Wohn",
+        "info": "",
+        "x": 140,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "f3cc59d9f8eee801",
+        "type": "function",
+        "z": "4a8d304c950302af",
+        "name": "Trans to Group",
+        "func": "let status = false;\nlet levelA = 0;\nlet color = 0;\nlet indexLength = msg.payload.length;\n\nmsg.payload.forEach((e) => {\n\n    if(e.value == true)\n    {\n        status = true;\n    }\n    \n    color = e.color;\n    levelA += e.level;\n})\n\nlevelA = levelA / indexLength;\n\nvar inMsg = {\n    measurement: \"light\",\n    payload:\n        [{\n            // fields\n            value: status,\n            level: levelA,\n            color: color,\n        },\n        {\n            // tags\n            name: msg.groupName,\n            type: \"group\"\n        }]\n}\n\nvar trg = {\n    topic: \"hue/trigger/light\",\n    payload: \"light\",\n    type: \"trigger_group\"\n}\nreturn [inMsg, trg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 520,
+        "wires": [
+            [
+                "0dd45f60c17a3636",
+                "2e57962eb7d35bc3"
+            ],
+            [
+                "67ee7350a2e8311a"
+            ]
+        ]
+    },
+    {
+        "id": "0dd45f60c17a3636",
+        "type": "debug",
+        "z": "4a8d304c950302af",
+        "name": "debug 22",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "2e57962eb7d35bc3",
+        "type": "influxdb out",
+        "z": "4a8d304c950302af",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "hue",
+        "x": 1410,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "5a8613ae86b8c2de",
+        "type": "inject",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 580,
+        "wires": [
+            [
+                "5efbbe751b5dbe10"
+            ]
+        ]
+    },
+    {
+        "id": "2252212dae9d3a31",
+        "type": "delay",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "800",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 520,
+        "wires": [
+            [
+                "5efbbe751b5dbe10"
+            ]
+        ]
+    },
+    {
+        "id": "a9d78430f4e6de44",
+        "type": "comment",
+        "z": "4a8d304c950302af",
+        "name": "Trigger Light",
+        "info": "",
+        "x": 1370,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "67ee7350a2e8311a",
+        "type": "delay",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "pauseType": "queue",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "3",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1420,
+        "y": 640,
+        "wires": [
+            [
+                "f6e0cdc821022ed9"
+            ]
+        ]
+    },
+    {
+        "id": "f6e0cdc821022ed9",
+        "type": "link out",
+        "z": "4a8d304c950302af",
+        "name": "hue_trg_lights_group",
+        "mode": "link",
+        "links": [
+            "4254b51be531da74"
+        ],
+        "x": 1675,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "333d718cbce7c275",
+        "type": "link in",
+        "z": "4a8d304c950302af",
+        "name": "link in 5",
+        "links": [
+            "a4023e90a64e5bc7"
+        ],
+        "x": 85,
+        "y": 760,
+        "wires": [
+            [
+                "5a83ac540b094307"
+            ]
+        ]
+    },
+    {
+        "id": "140cb53f78269cda",
+        "type": "influxdb in",
+        "z": "4a8d304c950302af",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"hue\")\n  |> range(start: -7d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"light\")\n  |> filter(fn: (r) => r[\"name\"] == \"01-Bad-Decke\" or r[\"name\"] == \"01-Bad-L01\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"name\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 550,
+        "y": 760,
+        "wires": [
+            [
+                "ec689c97884f0154"
+            ]
+        ]
+    },
+    {
+        "id": "898198e071c26e17",
+        "type": "comment",
+        "z": "4a8d304c950302af",
+        "name": "Group: 00-Bad",
+        "info": "",
+        "x": 140,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "a853e0cd8bdd2536",
+        "type": "inject",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 820,
+        "wires": [
+            [
+                "140cb53f78269cda"
+            ]
+        ]
+    },
+    {
+        "id": "5a83ac540b094307",
+        "type": "delay",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "800",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 260,
+        "y": 760,
+        "wires": [
+            [
+                "140cb53f78269cda"
+            ]
+        ]
+    },
+    {
+        "id": "ec689c97884f0154",
+        "type": "change",
+        "z": "4a8d304c950302af",
+        "name": "01-Bad",
+        "rules": [
+            {
+                "t": "set",
+                "p": "groupName",
+                "pt": "msg",
+                "to": "01-Bad",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 760,
+        "wires": [
+            [
+                "f3cc59d9f8eee801"
+            ]
+        ]
+    },
+    {
+        "id": "464c938f92bc2dca",
+        "type": "change",
+        "z": "4a8d304c950302af",
+        "name": "00-Wohn",
+        "rules": [
+            {
+                "t": "set",
+                "p": "groupName",
+                "pt": "msg",
+                "to": "00-Wohn",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 520,
+        "wires": [
+            [
+                "f3cc59d9f8eee801"
+            ]
+        ]
+    },
+    {
+        "id": "eade5cf0ecb82c64",
+        "type": "hue-bridge-node",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "bridge": "f08c81db3cddc150",
+        "autoupdates": true,
+        "skipglobalevents": false,
+        "initevents": false,
+        "x": 570,
+        "y": 960,
+        "wires": [
+            [
+                "f4be7422fad94d93"
+            ]
+        ]
+    },
+    {
+        "id": "3b8a7478283fd351",
+        "type": "inject",
+        "z": "4a8d304c950302af",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 960,
+        "wires": [
+            [
+                "e3c0d5bbc15f995a"
+            ]
+        ]
+    },
+    {
+        "id": "f4be7422fad94d93",
+        "type": "debug",
+        "z": "4a8d304c950302af",
+        "name": "debug 23",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "e3c0d5bbc15f995a",
+        "type": "function",
+        "z": "4a8d304c950302af",
+        "name": "function 9",
+        "func": "return { payload : { fetch : \"group\" }}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 960,
+        "wires": [
+            [
+                "eade5cf0ecb82c64"
             ]
         ]
     }

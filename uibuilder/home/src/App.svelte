@@ -40,6 +40,10 @@
 					let key = topic+"/"+e._measurement+"/"+e.name;
 					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e._value, _time : e._time};
 				}	
+				if(topic == "indb/hue") {
+					let key = topic+"/"+e._measurement+"/"+e.name;
+					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e.value, level : e.level, color : e.color, _time : e._time};
+				}	
 			});
 
 			MyXlClimateData = getMyXlClimateData(InDbData);
