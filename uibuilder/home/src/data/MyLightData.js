@@ -11,7 +11,8 @@ function getItem(indbData, key) {
 
 function pushToArray_HM(newDataArray, indbData, name, type, key) { 
     try{
-        let k = getItemValue(indbData, key)._value;
+        let i = getItem(indbData, key);
+        let k = i._value;
         let status = false;
         let level = 0;
 
@@ -23,6 +24,8 @@ function pushToArray_HM(newDataArray, indbData, name, type, key) {
         }
 
         newDataArray.push({
+            key : i.name,
+            topic : i.topic,
             name : name,
             type : type,
             status : status,
@@ -36,13 +39,15 @@ function pushToArray_HM(newDataArray, indbData, name, type, key) {
 
 function pushToArray_HUE(newDataArray, indbData, name, type, key) { 
     try{
-        let i = getItemValue(indbData, key);
+        let i = getItem(indbData, key);
 
         newDataArray.push({
+            key : i.name,
+            topic : i.topic,
             name : name,
             type : type,
             status : i._value,
-            level : i.level,
+            level : Math.ceil(i.level),
             color : i.color
         });
     }
@@ -56,20 +61,28 @@ export function getMyXlLightData(indbData) {
 
     // Wohnen HUE
     pushToArray_HUE(newDataArray, indbData, "Wohnen HUE", "dim",
-    "indb/hue/LEVEL/00-Wohn-L02");
-
+    "indb/hue/light/group/00-Wohn");
     // Wohnen Ceiling
     pushToArray_HM(newDataArray, indbData, "Wohnen Decke", "dim",
     "indb/homematic/LEVEL/00-Wohn-Licht");
+
+    // Bad HUE
+    pushToArray_HUE(newDataArray, indbData, "Bad HUE", "dim",
+    "indb/hue/light/group/01-Bad");
+    // Kind 2 HUE
+    pushToArray_HUE(newDataArray, indbData, "Kind 2 HUE", "dim",
+    "indb/hue/light/group/01-Kind2");
+
+    // Outdoor HUE
+    pushToArray_HUE(newDataArray, indbData, "Draussen HUE", "dim",
+    "indb/hue/light/group/00-Outdoor");
+
     // Flur Ceiling
     pushToArray_HM(newDataArray, indbData, "Flur Decke", "onoff",
     "indb/homematic/STATE/00-Flur-Licht");
     // Treppe
     pushToArray_HM(newDataArray, indbData, "Treppe", "onoff",
     "indb/homematic/STATE/00-Treppe-Licht");
-
-   
-
 
     return newDataArray;
 }

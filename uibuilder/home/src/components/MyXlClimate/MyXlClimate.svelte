@@ -28,11 +28,11 @@
                 <Group position='center' direction="column">
                     <Group position='center' direction="row">
                         <Text style='font-size:100px;padding-left:25px;'>{values[selectorIndex].temp} </Text>
-                        <Text size='xl'>°C</Text>
+                        <Text size='xl' style='padding-top:70px;'>°C</Text>
                     </Group>
                     <Group position='center' direction="row">
                         <Text style='font-size:50px;padding-left:25px;'>{values[selectorIndex].humi} </Text>
-                        <Text size='xl'>%</Text>
+                        <Text size='xl' style='padding-top:24px;'>%</Text>
                     </Group>
                 </Group>
                 <Space h={5} />

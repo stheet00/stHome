@@ -12,10 +12,13 @@
     import { getMyXlClimateData } from './data/MyClimateData';
 	import MyXlLight from './components/MyXlLight/MyXlLight.svelte';
 	import { getMyXlLightData } from './data/MyLightData';
+    import MyXlPower from './components/MyXlPower.svelte/MyXlPower.svelte';
 	
-
-	// These are "props" - variables that can be used in a parent component when mounting this component & used in the UI
-	export let uibsend
+	export function uibSend(routing, target, command, source) {
+		let cmdSend =  { routing: routing, target : target, command : command, source : source };
+		console.info('cmd send to Node-RED server:', cmdSend)
+		uibuilder.send(cmdSend);
+	}
 
 	let InDbData = {};
 	let MyXlClimateData = [];
@@ -26,9 +29,6 @@
 		// Start up the uibuilderfe library
         uibuilder.start()
 
-		// A convenient send function that can be wired direct to events - defined as a prop above
-		uibsend = uibuilder.eventSend
-
 		// Listen for new messages from Node-RED/uibuilder
         uibuilder.onChange('msg', function(msg){
             console.info('msg received from Node-RED server:', msg)
@@ -38,32 +38,36 @@
 			msg.payload.forEach((e) => {		
 				if(topic == "indb/homematic") {
 					let key = topic+"/"+e._measurement+"/"+e.name;
-					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e._value, _time : e._time};
+					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e._value, _time : e._time,
+					topic : topic};
 				}	
 				if(topic == "indb/hue") {
-					let key = topic+"/"+e._measurement+"/"+e.name;
-					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e.value, level : e.level, color : e.color, _time : e._time};
+					let key = topic+"/"+e._measurement+"/"+e.type+"/"+e.name;
+					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e.value, type : e.type,
+						level : e.level, color : e.color, _time : e._time, topic : topic};
 				}	
 			});
 
 			MyXlClimateData = getMyXlClimateData(InDbData);
 			MyXlLightData = getMyXlLightData(InDbData);
-        })
 
+			
+        })
     }) // --- End of onMount --- //
 </script>
 
 <main>
 	<SvelteUIProvider withNormalizeCSS withGlobalStyles themeObserver={'dark'}>
 		<Carousel>
-			<SimpleGrid cols={3} override={{margin:5}}>
+			<SimpleGrid cols={3} override={{margin:5}} spacing={3}>
 				<MyXlClimate values={MyXlClimateData}/>
 				<MyXlLight values={MyXlLightData}/>
-				<div>3</div>
+				<MyXlPower />
 			</SimpleGrid>
 				
 			<SimpleGrid cols={3} override={{margin:5}}>
-				<div>4</div>
+				<MyXlPower />
+				
 				<div>5</div>
 				<div>6</div>
 			</SimpleGrid>
