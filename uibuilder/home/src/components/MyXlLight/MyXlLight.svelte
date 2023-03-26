@@ -13,10 +13,14 @@ let selectorIndex = 0;
 
 function onClickLightStateChange() {
     values[selectorIndex].status =  !values[selectorIndex].status;
-    onSliderChange();
+    uibSend("status");
 }
 
 function onSliderChange() { 
+    uibSend("level");
+}
+
+function uibSend(trigger) {
     let routing = values[selectorIndex].topic;
     let target =  values[selectorIndex].key;
     let type = values[selectorIndex].type;
@@ -24,9 +28,9 @@ function onSliderChange() {
     let level = values[selectorIndex].level;
     let cmd
     if(type == "onoff") {
-        cmd = { cmd : type, status : status}
+        cmd = { cmd : type, status : status, update : trigger}
     } else {
-        cmd = { cmd : type, status : status, level : level}
+        cmd = { cmd : type, status : status, level : level, update : trigger}
     }
     app.uibSend(routing, target, cmd, "MyXlLight");
 }
@@ -49,9 +53,9 @@ function lightSelectorFw() {
             <ActionIcon size={20} variant="light" ><HamburgerMenu size={20} /></ActionIcon>
         </Group>
         {#if values.length > 0}
-            <ActionIcon size=130 on:click={onClickLightStateChange}>
+            <ActionIcon size=100 on:click={onClickLightStateChange}>
                 <Group position='center' direction="column">
-                    <LightBulb size=130 color={values[selectorIndex].status == true ? theme.colors['yellow500'].value : "white" }/>
+                    <LightBulb size=100 color={values[selectorIndex].status == true ? theme.colors['yellow500'].value : "white" }/>
                     <Text size='sm'>{values[selectorIndex].status == true ? "On" : "Off"}</Text>
                 </Group>
             </ActionIcon>
@@ -65,7 +69,7 @@ function lightSelectorFw() {
                     <Slider bind:value={values[selectorIndex].level} on:SMUISlider:change={onSliderChange}/>
                 </Group>
             {/if}
-            <Space h={5} />
+            <Space h={8} />
             <Group position="center" spacing="xl" >
                 <ActionIcon variant="light" on:click={lightSelectorBw}>
                     <CaretLeft size={20} />

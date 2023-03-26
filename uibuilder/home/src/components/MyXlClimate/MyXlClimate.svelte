@@ -2,6 +2,7 @@
     import { Stack, Paper, Group, Text, Space, ActionIcon, Loader} from '@svelteuidev/core';
     import { CaretLeft, CaretRight, HamburgerMenu } from 'radix-icons-svelte';
     import { MyXlCardShadow }  from '../../styles/default.js';
+    import Temp from '../icons/Temp.svelte';
     
     // example {name : "Wohnen", temp : 24.3, humi : 40}
     export let values = [];
@@ -26,19 +27,14 @@
             </Group>
             {#if values.length > 0}
                 <Group position='center' direction="column">
-                    <Group position='center' direction="row">
-                        <Text style='font-size:100px;padding-left:25px;'>{values[selectorIndex].temp} </Text>
-                        <Text size='xl' style='padding-top:70px;'>°C</Text>
-                    </Group>
-                    <Group position='center' direction="row">
-                        <Text style='font-size:50px;padding-left:25px;'>{values[selectorIndex].humi} </Text>
-                        <Text size='xl' style='padding-top:24px;'>%</Text>
-                    </Group>
+                    <Temp size=100 color={"white"}/>
+                    <Space h={14} />
                 </Group>
-                <Space h={5} />
-                <Group style="height:55px;"> 
+                <Group position='center' direction="column">
+                    <Text style='font-size:70px;'>{values[selectorIndex].temp} </Text>
+                    <Text size='xl'>°C</Text>
                 </Group>
-                <Space h={5} />
+
                 <Group position="center" spacing="xl" >
                     <ActionIcon variant="light" on:click={selectorBw}>
                         <CaretLeft size={20} />

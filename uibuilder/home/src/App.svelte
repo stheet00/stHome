@@ -12,7 +12,10 @@
     import { getMyXlClimateData } from './data/MyClimateData';
 	import MyXlLight from './components/MyXlLight/MyXlLight.svelte';
 	import { getMyXlLightData } from './data/MyLightData';
-    import MyXlPower from './components/MyXlPower.svelte/MyXlPower.svelte';
+    import MyXlPower from './components/MyXlPower/MyXlPower.svelte';
+	import { getMyXlPowerManData } from './data/MyPowerManData';
+	import MyXlWndDoor from './components/MyXlWndDoor/MyXlWndDoor.svelte';
+	import { getMyXlWndDoorData } from './data/MyWndDoorData';
 	
 	export function uibSend(routing, target, command, source) {
 		let cmdSend =  { routing: routing, target : target, command : command, source : source };
@@ -23,6 +26,8 @@
 	let InDbData = {};
 	let MyXlClimateData = [];
 	let MyXlLightData = [];
+	let MyXlPowerManData = [];
+	let MyXlWndDoorData = [];
 
 	// Only runs when this component is being mounted (e.g. once, when the page is loaded)
     onMount(() => {
@@ -45,13 +50,20 @@
 					let key = topic+"/"+e._measurement+"/"+e.type+"/"+e.name;
 					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e.value, type : e.type,
 						level : e.level, color : e.color, _time : e._time, topic : topic};
-				}	
+				}
+				if(topic == "indb/powerman") {
+					let key = topic+"/"+e._measurement+"/"+e.type+"/"+e.instance;
+					InDbData[key] = { _measurement : e._measurement, _value : e._value, type : e.type,
+						 _time : e._time, topic : topic};
+				}
 			});
 
 			MyXlClimateData = getMyXlClimateData(InDbData);
 			MyXlLightData = getMyXlLightData(InDbData);
-
+			MyXlPowerManData = getMyXlPowerManData(InDbData);
+			MyXlWndDoorData = getMyXlWndDoorData(InDbData);
 			
+			console.info('inDbData object', InDbData);
         })
     }) // --- End of onMount --- //
 </script>
@@ -62,11 +74,11 @@
 			<SimpleGrid cols={3} override={{margin:5}} spacing={3}>
 				<MyXlClimate values={MyXlClimateData}/>
 				<MyXlLight values={MyXlLightData}/>
-				<MyXlPower />
+				<MyXlWndDoor values={MyXlWndDoorData}/> 
 			</SimpleGrid>
 				
 			<SimpleGrid cols={3} override={{margin:5}}>
-				<MyXlPower />
+				<MyXlPower values={MyXlPowerManData}/>
 				
 				<div>5</div>
 				<div>6</div>

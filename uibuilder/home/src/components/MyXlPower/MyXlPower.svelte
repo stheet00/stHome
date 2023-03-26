@@ -6,13 +6,11 @@ import Home from '../icons/Home.svelte';
 import { CaretLeft, CaretRight, HamburgerMenu } from 'radix-icons-svelte';
 import { MyXlCardShadow }  from '../../styles/default.js';
 import PowerPole from '../icons/PowerPole.svelte';
+import SolarRoof from '../icons/SolarRoof.svelte';
+import Battery from '../icons/Battery.svelte';
 
 // example {key: "00-Haus", topic: "indb/powerman", name : "Haus", power : 5}
-export let values = [{key: "Home", topic: "indb/powerman", name : "Haus", power : 2.5},
-                     {key: "Feed-In", topic: "indb/powerman", name : "Netz", power : -0.5},
-                     {key: "Pv", topic: "indb/powerman", name : "Solar", power : 1.0},
-                     {key: "Battery", topic: "indb/powerman", name : "Batterie", power : -0.5}                
-];
+export let values = [];
 let selectorIndex = 0;
 
 function lightSelectorFw() {
@@ -35,23 +33,25 @@ function lightSelectorFw() {
         {#if values.length > 0}
             <Group position='center' direction="column">
                 {#if values[selectorIndex].key == "Home"}
-                    <Home size=130 color={"white"}/>
+                    <Home size=100 color={"white"}/>
+                    <Text size='sm'>Verbrauch</Text>
                 {:else if values[selectorIndex].key == "Feed-In"}
-                    <PowerPole size=130 color={"white"}/>
+                    <PowerPole size=100 color={"white"}/>
+                    <Text size='sm'>{values[selectorIndex].direction}</Text>
                 {:else if values[selectorIndex].key == "Pv"}
-                    <Home size=130 color={"white"}/>
+                    <SolarRoof size=100 color={"white"}/>
+                    <Text size='sm'>Produktion</Text>
                 {:else}
-                    <Home size=130 color={"white"}/>
+                    <Battery size=100 color={"white"}/>
+                    <Text size='sm'>{values[selectorIndex].direction}</Text>
                 {/if}
-                <Group position='center' direction="row">
-                    <Text style='font-size:80px;padding-left:50px;'>{values[selectorIndex].power}</Text>
-                    <Text style='padding-top:40px;' size='xl'>kWh</Text>
-                </Group>
-            </Group>
-           
-            <Group spacing="md" position='center' style="height:38px">
             </Group>
 
+            <Group position='center' direction="column">
+                <Text style='font-size:70px;'>{values[selectorIndex].power}</Text>
+                <Text size='xl'>{values[selectorIndex].unit}</Text>
+            </Group>
+        
             <Group position="center" spacing="xl" >
                 <ActionIcon variant="light" on:click={lightSelectorBw}>
                     <CaretLeft size={20} />
