@@ -38,7 +38,7 @@ function round(value, decimals) {
 export function getMyXlWndDoorData(indbData) {
     let newDataArray = [];
 
-    pushToArray(newDataArray, indbData, "All", "Alle",
+    pushToArray(newDataArray, indbData, "00-All-Shutter", "Alle",
     "indb/homematic/DIRECTION/00-All-Shutter.Req",
     ["indb/homematic/LEVEL/00-Wohn-Shutter-01", "indb/homematic/LEVEL/00-Wohn-Shutter-02",
     "indb/homematic/LEVEL/00-Wohn-Shutter-03", "indb/homematic/LEVEL/00-Wohn-Shutter-04",

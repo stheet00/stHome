@@ -18,12 +18,14 @@
     "rollup-plugin-svelte": "^7.0.0",
     "rollup-plugin-terser": "^7.0.0",
     "svelte": "^3.0.0",
-    "svelte-carousel": "^1.0.23"
+    "svelte-carousel": "^1.0.23",
+    "svelte-visibility-change": "^0.6.0"
   },
   "dependencies": {
-    "@svelteuidev/composables": "^0.10.0",
-    "@svelteuidev/core": "^0.10.0",
+    "@svelteuidev/composables": "^0.11.1",
+    "@svelteuidev/core": "^0.11.1",
     "radix-icons-svelte": "^1.2.1",
-    "sirv-cli": "^2.0.0"
+    "sirv-cli": "^2.0.0",
+    "svelte-collapse": "^0.1.1"
   }
 }

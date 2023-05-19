@@ -5,8 +5,8 @@
 	 */
 
 	import { onMount } from 'svelte'
-	import { SvelteUIProvider } from '@svelteuidev/core';
-	import { SimpleGrid, Stack, Space } from '@svelteuidev/core';
+	import { ActionIcon, SvelteUIProvider } from '@svelteuidev/core';
+	import { SimpleGrid, Group, Stack, Space, Divider} from '@svelteuidev/core';
 	import Carousel from 'svelte-carousel';
     import MyXlClimate from './components/MyXlClimate/MyXlClimate.svelte';
     import { getMyXlClimateData } from './data/MyClimateData';
@@ -16,6 +16,9 @@
 	import { getMyXlPowerManData } from './data/MyPowerManData';
 	import MyXlWndDoor from './components/MyXlWndDoor/MyXlWndDoor.svelte';
 	import { getMyXlWndDoorData } from './data/MyWndDoorData';
+	import { Gear, Home } from 'radix-icons-svelte';
+	import collapse from 'svelte-collapse'
+	import MySettings from './components/MySettings/MySettings.svelte';
 	
 	export function uibSend(routing, target, command, source) {
 		let cmdSend =  { routing: routing, target : target, command : command, source : source };
@@ -23,6 +26,10 @@
 		uibuilder.send(cmdSend);
 	}
 
+	export function getInDbData() {
+		return InDbData;
+	}
+	
 	let InDbData = {};
 	let MyXlClimateData = [];
 	let MyXlLightData = [];
@@ -40,7 +47,11 @@
 
 			let topic = msg.topic;
 
-			msg.payload.forEach((e) => {		
+			msg.payload.forEach((e) => {
+				if(topic == "indb/globalParam") {
+					let key = topic+"/"+e._measurement;
+					InDbData[key] = { _measurement : e._measurement, orig : e };
+				}			
 				if(topic == "indb/homematic") {
 					let key = topic+"/"+e._measurement+"/"+e.name;
 					InDbData[key] = { name : e.name, _measurement : e._measurement, _value : e._value, _time : e._time,
@@ -66,24 +77,42 @@
 			console.info('inDbData object', InDbData);
         })
     }) // --- End of onMount --- //
+
+	let navi = "home"
 </script>
 
 <main>
 	<SvelteUIProvider withNormalizeCSS withGlobalStyles themeObserver={'dark'}>
-		<Carousel>
-			<SimpleGrid cols={3} override={{margin:5}} spacing={3}>
-				<MyXlClimate values={MyXlClimateData}/>
-				<MyXlLight values={MyXlLightData}/>
-				<MyXlWndDoor values={MyXlWndDoorData}/> 
-			</SimpleGrid>
-				
-			<SimpleGrid cols={3} override={{margin:5}}>
-				<MyXlPower values={MyXlPowerManData}/>
-				
-				<div>5</div>
-				<div>6</div>
-			</SimpleGrid>
-		</Carousel>
+		<Group position='left' direction="row" spacing="lg">
+			<Space w={20}/>
+			<ActionIcon on:click={() => {navi = "home"}}>
+				<Home color="white" size=24/>
+			</ActionIcon>
+			<ActionIcon on:click={() => {navi = "settings"}}>
+				<Gear color="white" size=24/>
+			</ActionIcon>
+			<Space h={20}/>
+		</Group>
+		<div use:collapse={{ open: navi == "home" ? true : false, duration: 0.1 }}>
+			<Carousel>
+				<SimpleGrid cols={3} override={{margin:5}} spacing={3}>
+					<MyXlClimate values={MyXlClimateData}/>
+					<MyXlLight values={MyXlLightData}/>
+					<MyXlWndDoor values={MyXlWndDoorData}/> 
+				</SimpleGrid>
+					
+				<SimpleGrid cols={3} override={{margin:5}}>
+					<MyXlPower values={MyXlPowerManData}/>
+					
+					<div>5</div>
+					<div>6</div>
+				</SimpleGrid>
+			</Carousel>
+		</div>
+		<div style="margin-left:45px;margin-top:5px"
+		     use:collapse={{ open: navi == "settings" ? true : false, duration: 0.1 }}>
+			<MySettings reload = { navi == "settings" ? true : false }/>
+		</div>
 	</SvelteUIProvider>
 </main>
 

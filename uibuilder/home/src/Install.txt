@@ -16,3 +16,15 @@ https://github.com/brisklemonade/radix-icons-svelte
     https://icons.radix-ui.com/
 
 https://remixicon.com/
+
+----------
+Uncaught Exception in node_modules/@svelteuidev/composables/actions/use-focus-trap/tabbable.js
+using modal component; function hidden process line commented
+
+function hidden(element) {
+    //if (process.env.NODE_ENV === 'test') {
+    //    return false;
+    //}
+    return element.style.display === 'none';
+}
+----------

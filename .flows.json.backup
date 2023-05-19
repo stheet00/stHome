@@ -56,6 +56,14 @@
         "env": []
     },
     {
+        "id": "5cd4f85f34a253b8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "d0287b86.19f57",
         "type": "subflow",
         "name": "espCO2",
@@ -760,6 +768,35 @@
         "caname": "",
         "servername": "",
         "verifyservercert": false
+    },
+    {
+        "id": "726048dc47bafe2a",
+        "type": "modbus-client",
+        "name": "SE Garage",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.20.21",
+        "tcpPort": "1502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showWarnings": true,
+        "showLogs": true
     },
     {
         "id": "b818fe83.218c38",
@@ -2941,6 +2978,148 @@
         "wires": []
     },
     {
+        "id": "f82f1823d9bc3927",
+        "type": "comment",
+        "z": "781e2d3a48b04110",
+        "name": "Init global param in influxDB",
+        "info": "",
+        "x": 160,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "76eeb889d1b93ab4",
+        "type": "inject",
+        "z": "781e2d3a48b04110",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 400,
+        "wires": [
+            [
+                "8d0e238d57060ce6"
+            ]
+        ]
+    },
+    {
+        "id": "8d0e238d57060ce6",
+        "type": "function",
+        "z": "781e2d3a48b04110",
+        "name": "EV Param",
+        "func": "var params = [];\n\nvar defaultParams = [\n    // off | soc | energy\n    { m: \"nightChargeToEnabled_1\", car: 1, t: \"drop\", v : \"soc\", d : \"Car 1 laden freig.\", dl : \"Laden für Car 1 ist freigegeben\" },\n    { m: \"nightChargeToEnabled_2\", car: 2, t: \"drop\", d: \"Car 2 laden freig.\", dl: \"Laden für Car 2 ist freigegeben\"},\n    { m: \"nightChargeToSocLevel_1\", car: 1, t: \"radio\", v: 80, u: \"%\", d: \"Car 1 Nacht laden\", dl: \"Car 1 laden über Nacht bis SOC in %\" },\n    { m: \"nightChargeToSocLevel_2\", car: 2, t: \"radio\", v: 80, u: \"%\", d: \"Car 2 Nacht laden\", dl: \"Car 2 laden über Nacht bis SOC in %\" },\n    { m: \"pvChargeToSocLevel_1\", car: 1, t: \"radio\", v: 80, u: \"%\", d: \"Car 1 PV laden\", dl: \"Car 1 laden wenn PV bis SOC in %\"},\n    { m: \"pvChargeToSocLevel_2\", car: 2, t: \"radio\", v: 80, u: \"%\", d: \"Car 2 PV laden\", dl: \"Car 2 laden wenn PV bis SOC in %\" }\n]\n\ndefaultParams.forEach(e => {\n    params.push({\n        measurement: e.m,\n        payload:\n            [{\n                // fields\n                value: e.v,\n            },\n            {\n                // tags\n                type: \"parameter\",\n                param: \"EV\",\n                group: \"car\",\n                number: e.car,\n                unit: e.u,\n                dsc: e.d,\n                dscLong: e.dl,\n                uiType: e.t\n            }]\n    })\n})\n\nreturn {payload : params};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 400,
+        "wires": [
+            [
+                "7622681c16f5f0dd"
+            ]
+        ]
+    },
+    {
+        "id": "7622681c16f5f0dd",
+        "type": "split",
+        "z": "781e2d3a48b04110",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 530,
+        "y": 400,
+        "wires": [
+            [
+                "1a7d171c3e4aa9b5"
+            ]
+        ]
+    },
+    {
+        "id": "c71d28a8626d19ba",
+        "type": "debug",
+        "z": "781e2d3a48b04110",
+        "name": "debug 43",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "1a7d171c3e4aa9b5",
+        "type": "function",
+        "z": "781e2d3a48b04110",
+        "name": "Transform",
+        "func": "return msg.payload;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 400,
+        "wires": [
+            [
+                "c71d28a8626d19ba",
+                "a78d567dfa6a7f03"
+            ]
+        ]
+    },
+    {
+        "id": "a78d567dfa6a7f03",
+        "type": "influxdb out",
+        "z": "781e2d3a48b04110",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "stHome",
+        "bucket": "globalParam",
+        "x": 1390,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "a90237e15bfa34e1",
+        "type": "comment",
+        "z": "781e2d3a48b04110",
+        "name": "EV Parameter",
+        "info": "",
+        "x": 110,
+        "y": 340,
+        "wires": []
+    },
+    {
         "id": "fc24ab83960a00e0",
         "type": "uibuilder",
         "z": "e1c0c9780ef1442c",
@@ -3104,7 +3283,8 @@
             "7fb445d726a4195f",
             "4254b51be531da74",
             "16e5f177fcc2e513",
-            "bc4901d171fd3d6d"
+            "bc4901d171fd3d6d",
+            "5421ce4ddf3538dd"
         ],
         "x": 725,
         "y": 620,
@@ -3532,12 +3712,17 @@
                 "vt": "str"
             },
             {
+                "t": "eq",
+                "v": "indb/globalParam",
+                "vt": "str"
+            },
+            {
                 "t": "else"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 3,
+        "outputs": 4,
         "x": 350,
         "y": 180,
         "wires": [
@@ -3546,6 +3731,9 @@
             ],
             [
                 "11e2f2103fde0562"
+            ],
+            [
+                "0fe2a5065b7ad8ec"
             ],
             [
                 "521eeb6b56d26fdf"
@@ -3559,7 +3747,8 @@
         "name": "ui_out_indb_homematic",
         "mode": "link",
         "links": [
-            "3642ca7f2b534a85"
+            "3642ca7f2b534a85",
+            "1ab5950b0a53b589"
         ],
         "x": 695,
         "y": 160,
@@ -3855,7 +4044,7 @@
         "type": "debug",
         "z": "e1c0c9780ef1442c",
         "name": "debug 41",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -3888,7 +4077,7 @@
         "id": "b0f899be6daeb996",
         "type": "comment",
         "z": "e1c0c9780ef1442c",
-        "name": "Send Shutter",
+        "name": "Send Blinds",
         "info": "",
         "x": 1170,
         "y": 840,
@@ -3899,7 +4088,7 @@
         "type": "function",
         "z": "e1c0c9780ef1442c",
         "name": "function 17",
-        "func": "msg.payload.forEach(e => {\n    e._value = { value : e.value, mapping : e.mvalue }\n})\nreturn msg;",
+        "func": "msg.payload.forEach(e => {\n    if(e.type == \"SYSVAR\" && e.channelType == \"BLIND\") {\n        e._value = { value : e.value, mapping : e.mvalue }\n    }\n})\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3912,6 +4101,153 @@
                 "a6027f478b5197f0"
             ]
         ]
+    },
+    {
+        "id": "31307230e5e31800",
+        "type": "inject",
+        "z": "e1c0c9780ef1442c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1180,
+        "y": 1120,
+        "wires": [
+            [
+                "565ab67e8c577ee7"
+            ]
+        ]
+    },
+    {
+        "id": "565ab67e8c577ee7",
+        "type": "influxdb in",
+        "z": "e1c0c9780ef1442c",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "",
+        "query": "from(bucket: \"globalParam\")\n  |> range(start: -9mo)\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 1410,
+        "y": 1120,
+        "wires": [
+            [
+                "8f1552bc6fd208fa"
+            ]
+        ]
+    },
+    {
+        "id": "5421ce4ddf3538dd",
+        "type": "link in",
+        "z": "e1c0c9780ef1442c",
+        "name": "link in 17",
+        "links": [
+            "0fe2a5065b7ad8ec",
+            "b0595157eb15f6ba"
+        ],
+        "x": 1185,
+        "y": 1180,
+        "wires": [
+            [
+                "565ab67e8c577ee7"
+            ]
+        ]
+    },
+    {
+        "id": "cf0239e425f558c9",
+        "type": "comment",
+        "z": "e1c0c9780ef1442c",
+        "name": "Send GlobalParams",
+        "info": "",
+        "x": 1190,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "8f1552bc6fd208fa",
+        "type": "change",
+        "z": "e1c0c9780ef1442c",
+        "name": "indb/homematic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "indb/globalParam",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1680,
+        "y": 1120,
+        "wires": [
+            [
+                "bde672d2116bfc94",
+                "736c95ed0541b694"
+            ]
+        ]
+    },
+    {
+        "id": "bde672d2116bfc94",
+        "type": "uib-sender",
+        "z": "e1c0c9780ef1442c",
+        "url": "home",
+        "name": "",
+        "topic": "",
+        "passthrough": false,
+        "return": false,
+        "outputs": 0,
+        "x": 1910,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "736c95ed0541b694",
+        "type": "debug",
+        "z": "e1c0c9780ef1442c",
+        "name": "debug 44",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1920,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "0fe2a5065b7ad8ec",
+        "type": "link out",
+        "z": "e1c0c9780ef1442c",
+        "name": "ui_out_indb_globalParam",
+        "mode": "link",
+        "links": [
+            "5421ce4ddf3538dd"
+        ],
+        "x": 695,
+        "y": 240,
+        "wires": []
     },
     {
         "id": "08c58347de41adad",
@@ -4243,8 +4579,8 @@
         "topic": "ReGaHSS/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 1100,
+        "x": 2260,
+        "y": 1080,
         "wires": [
             []
         ]
@@ -4258,8 +4594,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 680,
+        "x": 2260,
+        "y": 660,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4275,8 +4611,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1610,
-        "y": 620,
+        "x": 2250,
+        "y": 600,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4333,8 +4669,7 @@
         "name": "hm_trg_device",
         "mode": "link",
         "links": [
-            "a0b69e2a0299aac9",
-            "bc4901d171fd3d6d"
+            "a0b69e2a0299aac9"
         ],
         "x": 1675,
         "y": 260,
@@ -4459,7 +4794,7 @@
         "type": "debug",
         "z": "40f5e7c72cdecaab",
         "name": "debug 26",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -4678,7 +5013,7 @@
         "type": "debug",
         "z": "40f5e7c72cdecaab",
         "name": "debug 27",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -4699,8 +5034,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 740,
+        "x": 2260,
+        "y": 720,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4716,8 +5051,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 800,
+        "x": 2260,
+        "y": 780,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4733,8 +5068,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 860,
+        "x": 2260,
+        "y": 840,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4750,8 +5085,8 @@
         "topic": "hm00/${Name}",
         "change": true,
         "cache": true,
-        "x": 1620,
-        "y": 920,
+        "x": 2260,
+        "y": 900,
         "wires": [
             [
                 "b7ef8d4bfc111457"
@@ -4771,8 +5106,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 2420,
-        "y": 580,
+        "x": 3060,
+        "y": 560,
         "wires": []
     },
     {
@@ -4786,8 +5121,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1900,
-        "y": 680,
+        "x": 2540,
+        "y": 660,
         "wires": [
             [
                 "f93a0857ccd7928c"
@@ -4805,8 +5140,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2080,
-        "y": 680,
+        "x": 2720,
+        "y": 660,
         "wires": [
             [
                 "fc3a499bcbf23fbe",
@@ -4844,8 +5179,8 @@
         "links": [
             "b56ba630da045f02"
         ],
-        "x": 2275,
-        "y": 680,
+        "x": 2915,
+        "y": 660,
         "wires": []
     },
     {
@@ -4870,8 +5205,126 @@
         "z": "40f5e7c72cdecaab",
         "name": "hm00 shutter requests",
         "info": "",
-        "x": 1620,
-        "y": 540,
+        "x": 2260,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "1ab5950b0a53b589",
+        "type": "link in",
+        "z": "40f5e7c72cdecaab",
+        "name": "link in 16",
+        "links": [
+            "f9f06c6622e6fdb1"
+        ],
+        "x": 1515,
+        "y": 760,
+        "wires": [
+            [
+                "90456931819dabce"
+            ]
+        ]
+    },
+    {
+        "id": "90456931819dabce",
+        "type": "function",
+        "z": "40f5e7c72cdecaab",
+        "name": "",
+        "func": "var cmd = msg.command;\nvar cmdI = 0;\n\nif(cmd == \"Open\") { cmdI = 1;}\nif (cmd == \"Stop\") { cmdI = 5; }\nif (cmd == \"Close\") { cmdI = 2; }\n\nreturn { target: msg.target, payload: cmdI};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1680,
+        "y": 760,
+        "wires": [
+            [
+                "c47862cdea1cf4b2"
+            ]
+        ]
+    },
+    {
+        "id": "c47862cdea1cf4b2",
+        "type": "switch",
+        "z": "40f5e7c72cdecaab",
+        "name": "",
+        "property": "target",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "00-All-Shutter",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "00-Wohn-Shutter",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "01-Bad-Shutter",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "01-Kind1-Shutter",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "01-Kind2-Shutter",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "02-Schlaf-Shutter",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 1910,
+        "y": 760,
+        "wires": [
+            [
+                "28764797.9e911"
+            ],
+            [
+                "9390e8776e4a3303",
+                "8b02e8f4.68c08"
+            ],
+            [
+                "e8a4f254ed0497fe"
+            ],
+            [
+                "135e6ef11eb0c7e2"
+            ],
+            [
+                "1885621fa247705a"
+            ],
+            [
+                "d3a1df6c2c36fd82"
+            ]
+        ]
+    },
+    {
+        "id": "9390e8776e4a3303",
+        "type": "debug",
+        "z": "40f5e7c72cdecaab",
+        "name": "debug 42",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2040,
+        "y": 580,
         "wires": []
     },
     {
@@ -5403,7 +5856,7 @@
         "name": "Reset NightPlan",
         "info": "",
         "x": 120,
-        "y": 980,
+        "y": 1200,
         "wires": []
     },
     {
@@ -5426,7 +5879,7 @@
         "to": "",
         "reg": false,
         "x": 390,
-        "y": 1020,
+        "y": 1240,
         "wires": [
             [
                 "c9db06e6.8dfe2"
@@ -5453,7 +5906,7 @@
         "to": "",
         "reg": false,
         "x": 390,
-        "y": 1080,
+        "y": 1300,
         "wires": [
             [
                 "c9db06e6.8dfe2"
@@ -5480,7 +5933,7 @@
         "to": "",
         "reg": false,
         "x": 1050,
-        "y": 1140,
+        "y": 1360,
         "wires": [
             [
                 "c9db06e6.8dfe2"
@@ -5497,7 +5950,7 @@
         "retain": "",
         "broker": "25b4ae1f.f6e792",
         "x": 1310,
-        "y": 1040,
+        "y": 1260,
         "wires": []
     },
     {
@@ -5525,7 +5978,7 @@
             }
         ],
         "x": 130,
-        "y": 1020,
+        "y": 1240,
         "wires": [
             [
                 "f6a9501b.71959"
@@ -5557,7 +6010,7 @@
             }
         ],
         "x": 130,
-        "y": 1080,
+        "y": 1300,
         "wires": [
             [
                 "e1edcaa2.5c0ed8",
@@ -5575,7 +6028,7 @@
         "retain": "",
         "broker": "25b4ae1f.f6e792",
         "x": 1350,
-        "y": 1220,
+        "y": 1440,
         "wires": []
     },
     {
@@ -5598,7 +6051,7 @@
         "to": "",
         "reg": false,
         "x": 1050,
-        "y": 1220,
+        "y": 1440,
         "wires": [
             [
                 "d44740d6608a5244"
@@ -5625,7 +6078,7 @@
         "to": "",
         "reg": false,
         "x": 1050,
-        "y": 1260,
+        "y": 1520,
         "wires": [
             [
                 "d44740d6608a5244"
@@ -5642,7 +6095,7 @@
         "retain": "",
         "broker": "25b4ae1f.f6e792",
         "x": 1380,
-        "y": 1380,
+        "y": 1640,
         "wires": []
     },
     {
@@ -5652,7 +6105,7 @@
         "name": "0 = none 1 = Energiemenge 2 = EV-SoC",
         "info": "0 = none\n1 = Energiemenge\n2 = EV-SoC",
         "x": 1360,
-        "y": 1340,
+        "y": 1600,
         "wires": []
     },
     {
@@ -5664,36 +6117,9 @@
         "qos": "",
         "retain": "",
         "broker": "25b4ae1f.f6e792",
-        "x": 1380,
-        "y": 1520,
+        "x": 1460,
+        "y": 1780,
         "wires": []
-    },
-    {
-        "id": "076a40fb1f85059d",
-        "type": "change",
-        "z": "eda35aea761e62ca",
-        "name": "SOC = 75%",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "75",
-                "tot": "num"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 1070,
-        "y": 1520,
-        "wires": [
-            [
-                "b4558168fdde509a"
-            ]
-        ]
     },
     {
         "id": "62ee48c2362f4fd8",
@@ -5715,7 +6141,7 @@
         "to": "",
         "reg": false,
         "x": 1050,
-        "y": 1380,
+        "y": 1640,
         "wires": [
             [
                 "b2a08f5c1617f513"
@@ -5742,7 +6168,7 @@
         "to": "",
         "reg": false,
         "x": 1060,
-        "y": 1420,
+        "y": 1680,
         "wires": [
             [
                 "b2a08f5c1617f513"
@@ -5769,7 +6195,7 @@
         "to": "",
         "reg": false,
         "x": 1060,
-        "y": 1760,
+        "y": 2020,
         "wires": [
             [
                 "b2a08f5c1617f513"
@@ -5786,7 +6212,7 @@
         "retain": "",
         "broker": "25b4ae1f.f6e792",
         "x": 1380,
-        "y": 1820,
+        "y": 2080,
         "wires": []
     },
     {
@@ -5809,7 +6235,7 @@
         "to": "",
         "reg": false,
         "x": 1080,
-        "y": 1820,
+        "y": 2080,
         "wires": [
             [
                 "ee2628cd97611584"
@@ -5828,7 +6254,7 @@
         "retentionPolicy": "",
         "org": "stHome",
         "x": 390,
-        "y": 1380,
+        "y": 1640,
         "wires": [
             [
                 "b9a70645.25553"
@@ -5860,7 +6286,7 @@
             }
         ],
         "x": 140,
-        "y": 1380,
+        "y": 1640,
         "wires": [
             [
                 "5ea714c36d0b07b8"
@@ -5877,7 +6303,7 @@
         "rules": [
             {
                 "t": "lte",
-                "v": "15",
+                "v": "8",
                 "vt": "num"
             }
         ],
@@ -5885,7 +6311,7 @@
         "repair": false,
         "outputs": 1,
         "x": 650,
-        "y": 1380,
+        "y": 1640,
         "wires": [
             [
                 "a24f8b94.8417f",
@@ -5901,7 +6327,7 @@
         "name": "EV Conditioning",
         "info": "",
         "x": 140,
-        "y": 1340,
+        "y": 1600,
         "wires": []
     },
     {
@@ -5911,27 +6337,8 @@
         "name": "Charge SOC",
         "info": "",
         "x": 130,
-        "y": 1480,
+        "y": 1740,
         "wires": []
-    },
-    {
-        "id": "c95b662a00ae1739",
-        "type": "influxdb in",
-        "z": "eda35aea761e62ca",
-        "influxdb": "1e1a0e45bfb2abe0",
-        "name": "socFaultState",
-        "query": "from(bucket: \"ev\")\n  |> range(start: -5h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"carSocFaultState\")\n  |> filter(fn: (r) => r[\"type\"] == \"smartEQ\")\n  |> last()",
-        "rawOutput": false,
-        "precision": "",
-        "retentionPolicy": "",
-        "org": "stHome",
-        "x": 320,
-        "y": 1540,
-        "wires": [
-            [
-                "fc699d50d6a9aabb"
-            ]
-        ]
     },
     {
         "id": "fd02639b9aefa1dd",
@@ -5958,48 +6365,9 @@
             }
         ],
         "x": 140,
-        "y": 1540,
+        "y": 1800,
         "wires": [
-            [
-                "c95b662a00ae1739"
-            ]
-        ]
-    },
-    {
-        "id": "fc699d50d6a9aabb",
-        "type": "switch",
-        "z": "eda35aea761e62ca",
-        "name": "",
-        "property": "payload[0]._value",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "0",
-                "vt": "num"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 650,
-        "y": 1540,
-        "wires": [
-            [
-                "a24f8b94.8417f",
-                "aa8b5ca684d7bf49",
-                "076a40fb1f85059d",
-                "7904bcad6605e926"
-            ],
-            [
-                "a24f8b94.8417f",
-                "badf80d98ca28d2f",
-                "41d3d89ae35d1bc7",
-                "7904bcad6605e926"
-            ]
+            []
         ]
     },
     {
@@ -6009,7 +6377,7 @@
         "name": "Pass values to wallbox",
         "info": "",
         "x": 160,
-        "y": 2020,
+        "y": 2220,
         "wires": []
     },
     {
@@ -6024,7 +6392,7 @@
         "retentionPolicy": "",
         "org": "stHome",
         "x": 390,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "7ff69c831ff6d77d"
@@ -6053,7 +6421,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 150,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "fe3402e4e8dc65db"
@@ -6072,7 +6440,7 @@
         "finalize": "",
         "libs": [],
         "x": 670,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "e9f78dd6.fd1e5",
@@ -6097,7 +6465,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 900,
-        "y": 2160,
+        "y": 2360,
         "wires": []
     },
     {
@@ -6112,7 +6480,7 @@
         "stream": false,
         "addname": "",
         "x": 970,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "cd19f4f5.e9f1e"
@@ -6128,7 +6496,7 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1120,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "37b732c9.8cdfb6"
@@ -6146,7 +6514,7 @@
         "inout": "out",
         "property": "payload",
         "x": 1270,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "5a4fcb90.c10b84"
@@ -6168,7 +6536,7 @@
         "expiry": "",
         "broker": "25b4ae1f.f6e792",
         "x": 1420,
-        "y": 2080,
+        "y": 2280,
         "wires": []
     },
     {
@@ -6185,8 +6553,178 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 900,
-        "y": 2200,
+        "y": 2400,
         "wires": []
+    },
+    {
+        "id": "3fd98e9d4897df25",
+        "type": "mqtt in",
+        "z": "eda35aea761e62ca",
+        "name": "",
+        "topic": "openWB/lp/1/lastRfId",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "25b4ae1f.f6e792",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 140,
+        "y": 940,
+        "wires": [
+            [
+                "9be99fb69f95763f"
+            ]
+        ]
+    },
+    {
+        "id": "9be99fb69f95763f",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "lastRfId",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "lastRfId",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 940,
+        "wires": [
+            [
+                "b94dcec4d92892a3"
+            ]
+        ]
+    },
+    {
+        "id": "b94dcec4d92892a3",
+        "type": "function",
+        "z": "eda35aea761e62ca",
+        "name": "Map RfId - CarId",
+        "func": "var rfidCarMap = {\n    \"0004852614\" : 1,\n    \"0004652127\" : 1\n}\n\nvar rfidArr = msg.payload.split(\",\");\nvar rfidNo = 0;\n\nif (rfidArr.length >= 1) {\n    rfidNo = rfidArr[0];\n}\n\nif (rfidNo != 0) {\n\n    var inMsg = {\n        measurement: msg.topic,\n        payload:\n            [{\n                // fields\n                value: rfidNo,\n                carNo: rfidCarMap[rfidNo]\n            },\n            {\n                // tags\n                type: \"rfid\",\n                group: \"car\",\n            }]\n    }\n    \n    return inMsg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 940,
+        "wires": [
+            [
+                "4baded220266cd06"
+            ]
+        ]
+    },
+    {
+        "id": "1b49a81c7680bf0a",
+        "type": "influxdb in",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "nightChargeToEnabled_1",
+        "query": "from(bucket: \"globalParam\")\n  |> range(start: -9mo)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"nightChargeToEnabled_1\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 370,
+        "y": 1800,
+        "wires": [
+            [
+                "02e2762ac47f99ec"
+            ]
+        ]
+    },
+    {
+        "id": "02e2762ac47f99ec",
+        "type": "switch",
+        "z": "eda35aea761e62ca",
+        "name": "IsEnabled",
+        "property": "payload[0]._value",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "soc",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "energy",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 580,
+        "y": 1800,
+        "wires": [
+            [
+                "aa8b5ca684d7bf49",
+                "7904bcad6605e926",
+                "a24f8b94.8417f",
+                "686866f747857251"
+            ],
+            [
+                "41d3d89ae35d1bc7",
+                "badf80d98ca28d2f",
+                "7904bcad6605e926",
+                "a24f8b94.8417f"
+            ]
+        ]
+    },
+    {
+        "id": "686866f747857251",
+        "type": "influxdb in",
+        "z": "eda35aea761e62ca",
+        "influxdb": "1e1a0e45bfb2abe0",
+        "name": "nightChargeToSocLevel_1",
+        "query": "from(bucket: \"globalParam\")\n  |> range(start: -9mo)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"nightChargeToSocLevel_1\")\n  |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "stHome",
+        "x": 940,
+        "y": 1780,
+        "wires": [
+            [
+                "076a40fb1f85059d"
+            ]
+        ]
+    },
+    {
+        "id": "076a40fb1f85059d",
+        "type": "change",
+        "z": "eda35aea761e62ca",
+        "name": "set SOC",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload[0]._value",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160,
+        "y": 1780,
+        "wires": [
+            [
+                "b4558168fdde509a"
+            ]
+        ]
     },
     {
         "id": "ba1fed775a9a4167",
@@ -6544,7 +7082,7 @@
         "name": "Calculate roof : I_DC_Power and I_AC_Power",
         "info": "",
         "x": 210,
-        "y": 680,
+        "y": 900,
         "wires": []
     },
     {
@@ -6559,10 +7097,11 @@
         "retentionPolicy": "",
         "org": "stHome",
         "x": 390,
-        "y": 720,
+        "y": 940,
         "wires": [
             [
-                "7afaf5cfa7e4c6b1"
+                "7afaf5cfa7e4c6b1",
+                "ee09190d82ad4d04"
             ]
         ]
     },
@@ -6588,7 +7127,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 130,
-        "y": 720,
+        "y": 940,
         "wires": [
             [
                 "3af79f53487d97e8"
@@ -6609,7 +7148,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1340,
-        "y": 640,
+        "y": 860,
         "wires": []
     },
     {
@@ -6624,7 +7163,7 @@
         "finalize": "",
         "libs": [],
         "x": 690,
-        "y": 720,
+        "y": 940,
         "wires": [
             [
                 "ece68521d44e59f0"
@@ -6646,7 +7185,7 @@
         "org": "stHome",
         "bucket": "powerMan",
         "x": 1390,
-        "y": 720,
+        "y": 940,
         "wires": []
     },
     {
@@ -6661,7 +7200,7 @@
         "finalize": "",
         "libs": [],
         "x": 1060,
-        "y": 720,
+        "y": 940,
         "wires": [
             [
                 "4505aeca478f263d",
@@ -6681,7 +7220,7 @@
         "stream": false,
         "addname": "",
         "x": 910,
-        "y": 720,
+        "y": 940,
         "wires": [
             [
                 "9b137f730ca8c370"
@@ -6720,7 +7259,7 @@
         ],
         "uncaught": false,
         "x": 90,
-        "y": 1100,
+        "y": 1320,
         "wires": [
             [
                 "e5adb74a0a4ba432"
@@ -6741,7 +7280,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 280,
-        "y": 1100,
+        "y": 1320,
         "wires": []
     },
     {
@@ -6751,7 +7290,7 @@
         "name": "Catch WR1 & WR2",
         "info": "",
         "x": 130,
-        "y": 1060,
+        "y": 1280,
         "wires": []
     },
     {
@@ -7131,7 +7670,7 @@
         "name": "Calculate house : ac_Power",
         "info": "",
         "x": 160,
-        "y": 840,
+        "y": 1060,
         "wires": []
     },
     {
@@ -7146,7 +7685,7 @@
         "retentionPolicy": "",
         "org": "stHome",
         "x": 390,
-        "y": 880,
+        "y": 1100,
         "wires": [
             [
                 "38501a7435d18587"
@@ -7175,7 +7714,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 130,
-        "y": 880,
+        "y": 1100,
         "wires": [
             [
                 "b1e92b9eadaf55d4"
@@ -7196,7 +7735,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 1340,
-        "y": 800,
+        "y": 1020,
         "wires": []
     },
     {
@@ -7211,7 +7750,7 @@
         "finalize": "",
         "libs": [],
         "x": 680,
-        "y": 880,
+        "y": 1100,
         "wires": [
             [
                 "9a28422d6eee12fa",
@@ -7234,7 +7773,183 @@
         "org": "stHome",
         "bucket": "powerMan",
         "x": 1390,
-        "y": 880,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "ee09190d82ad4d04",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 45",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "3bb1ed1790a92c22",
+        "type": "comment",
+        "z": "16d854753ce10409",
+        "name": "WR Garage",
+        "info": "",
+        "x": 110,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "e451fce7aa62c824",
+        "type": "inject",
+        "z": "16d854753ce10409",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "20",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.2",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 700,
+        "wires": [
+            [
+                "c2ca34160926012c"
+            ]
+        ]
+    },
+    {
+        "id": "c2ca34160926012c",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "function 18",
+        "func": "msg.payload = { value: msg.payload, 'fc': 3, 'unitid': 1, 'address': 40083, 'quantity': 20 };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 700,
+        "wires": [
+            [
+                "e156d0ef6b128c00"
+            ]
+        ]
+    },
+    {
+        "id": "e156d0ef6b128c00",
+        "type": "modbus-flex-getter",
+        "z": "16d854753ce10409",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "726048dc47bafe2a",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 490,
+        "y": 700,
+        "wires": [
+            [],
+            [
+                "771a9be3326ea081"
+            ]
+        ]
+    },
+    {
+        "id": "771a9be3326ea081",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "mod -> JSON",
+        "func": "// Create new Buffer based on array bytes\nconst buf = Buffer.from(msg.payload.buffer);\n\nvar col = { \ntopic: \"seCal\",\npayload: [\n    {k: 'ac_Power', v: round(int16(40084) * scalefactor(40085) / 1000, 2)}, //I_AC_Power\n    {k: 'dc_Power', v: round(int16(40101) * scalefactor(40102) / 1000, 2)}  // I_DC_Power\n]}\n\nreturn col;\n\nfunction word(address) {\n    // Find the correct offset in bytes\n    // 40070 is the starting address we fetch from SolarEdge inverter\n    return (address-40084) * 2;\n}\n\nfunction scalefactor(address) {\n    return Math.pow(10, buf.readInt16BE(word(address)));\n}\n\nfunction int16(address) {\n    return buf.readInt16BE(word(address))\n}\n\nfunction uint16(address) {\n    return buf.readUInt16BE(word(address));\n}\n\nfunction int32(address) {\n    return buf.readInt32BE(word(address))\n}\n\nfunction uint32(address) {\n    return buf.readUInt32BE(word(address))\n}\n\nfunction round(value, decimals) {\n return Number(Math.round(value+'e'+decimals)+'e-'+decimals);\n} ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 700,
+        "wires": [
+            [
+                "9b9e6a0c0797734d"
+            ]
+        ]
+    },
+    {
+        "id": "9b9e6a0c0797734d",
+        "type": "split",
+        "z": "16d854753ce10409",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1010,
+        "y": 700,
+        "wires": [
+            [
+                "b0a92411a69679b3"
+            ]
+        ]
+    },
+    {
+        "id": "b0a92411a69679b3",
+        "type": "function",
+        "z": "16d854753ce10409",
+        "name": "Transform",
+        "func": "var inMsg = {\n    measurement: msg.payload.k,\n    payload:\n        [{\n            // fields\n            value: msg.payload.v,\n        },\n        {\n            // tags\n            vendor: \"solaredge\",\n            group: \"pv\",\n            location: \"garage\",\n            type: \"inverter\",\n            instance: 3\n        }]\n}\n\nreturn inMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 700,
+        "wires": [
+            [
+                "e7491da325191d3d",
+                "38413cfbad00b12d"
+            ]
+        ]
+    },
+    {
+        "id": "e7491da325191d3d",
+        "type": "debug",
+        "z": "16d854753ce10409",
+        "name": "debug 46",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1440,
+        "y": 700,
         "wires": []
     },
     {
@@ -7256,7 +7971,7 @@
         "type": "debug",
         "z": "e1a58a93ec1b7088",
         "name": "debug 31",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -7594,7 +8309,7 @@
         "type": "debug",
         "z": "e1a58a93ec1b7088",
         "name": "debug 33",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -7718,7 +8433,7 @@
         "type": "debug",
         "z": "e1a58a93ec1b7088",
         "name": "debug 34",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -7889,7 +8604,7 @@
         "type": "debug",
         "z": "e1a58a93ec1b7088",
         "name": "debug 36",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -8047,7 +8762,7 @@
         "type": "debug",
         "z": "e1a58a93ec1b7088",
         "name": "debug 37",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,

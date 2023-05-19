@@ -8,9 +8,25 @@ import BlindOpened from '../icons/BlindOpened.svelte';
 import BlindClosed from '../icons/BlindClosed.svelte';
 import BlindPartly from '../icons/BlindPartly.svelte';
 
-// example {key: "Alle", topic: "indb/homematic", name : "Alle", level : 100}
+// example {key: "00-All-Shutter", topic: "indb/homematic", name : "Alle", level : 100}
 export let values = [];
 let selectorIndex = 0;
+
+
+function onClickCmd(direction) {
+    let routing = values[selectorIndex].topic;
+    let target =  values[selectorIndex].key;
+ 
+    let cmd
+    if(direction == "open") {
+        cmd = "Open"
+    } else if(direction == "close") {
+        cmd = "Close"
+    } else if(direction == "stop") {
+        cmd = "Stop"
+    }
+    app.uibSend(routing, target, cmd, "MyXlWndDoor");
+}
 
 function lightSelectorFw() {
 	if(selectorIndex == values.length-1) { selectorIndex = 0 }
@@ -44,9 +60,9 @@ function lightSelectorFw() {
             </Group>
             <Space h={10} />
             <Group position='center' direction="row" spacing="lg">
-                <ActionIcon size={40} variant="light"><CaretUp size={30} /></ActionIcon>
-                <ActionIcon size={40} variant="light"><Stop size={30} /></ActionIcon>
-                <ActionIcon size={40} variant="light"><CaretDown size={30} /></ActionIcon>
+                <ActionIcon size={40} variant="light" on:click={() => onClickCmd("open")}><CaretUp size={30} /></ActionIcon>
+                <ActionIcon size={40} variant="light" on:click={() => onClickCmd("stop")}><Stop size={30} /></ActionIcon>
+                <ActionIcon size={40} variant="light"on:click={() => onClickCmd("close")}><CaretDown size={30} /></ActionIcon>
             </Group>
             <Space h={24} />
             <Group position="center" spacing="xl" >
